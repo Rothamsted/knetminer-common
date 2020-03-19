@@ -4,6 +4,7 @@
   <parent>
 		<groupId>uk.ac.rothamsted.knetminer</groupId>
 		<artifactId>knetminer-common</artifactId>
+		<!-- When you change this, you must re-generate create-project.sh via 'mvn package' -->
 		<version>1.0-SNAPSHOT</version>
   </parent>
   
@@ -11,17 +12,16 @@
   <name>knetminer-archetype - Template for Knetminer projects</name>
   <description>TODO.</description>
 
-	<repositories>
-	  <repository>
-	  	<!-- 
-	  		As usually, this points to both releases and snapshots and caches Maven Central
-	  		plus other repos.
-	  	 -->
-			<id>archetype</id>
-			<name>Knetminer Unified Repository</name>
-			<url>https://knetminer.org/artifactory/repository/maven-public</url>
-			<snapshots><enabled>true</enabled></snapshots>
-			<releases><enabled>true</enabled></releases>
-	  </repository>
-	</repositories>
+	<build>
+		<resources>
+			<resource>
+				<directory>src/main/resources</directory>
+				<includes>
+					<include>create-project.sh</include>
+				</includes>
+				<targetPath>${project.basedir}</targetPath>
+				<filtering>true</filtering>
+			</resource>
+		</resources>
+	</build>	
 </project>
