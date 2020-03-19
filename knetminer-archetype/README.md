@@ -2,22 +2,11 @@
 
 TODO: intro
 
+To generate a new project, type somewhing like:
+
+
 ```bash  	
-mvn archetype:generate \
-  -DgroupId=org.test.group \
-  -DartifactId=test \
-  -DarchetypeGroupId=uk.ac.rothamsted.knetminer \
-  -DarchetypeArtifactId=knetminer-archetype \
-  -DarchetypeVersion=<see pom.xml>
+curl -L https://tinyurl.com/knetminer-archetype-sh | sh -s org.group.test test3 1.0
 ```
 
-**YOU HAVE TO SETUP OUR REPOSITORY**
-		
-The `-DarchetypeRepository` don't work anymore with recent versions of the Maven archetype plugin,
-So, in order for the command above to work, you've to first setup our repository:  
-  
-`https://knetminer.org/artifactory/repository/maven-public`  
-    
-in your Maven environment. Details [here][1].
-
-[1]: https://maven.apache.org/archetype/maven-archetype-plugin/archetype-repository.html
+where, of course, the three parameters are the new artifact's coordinates.
