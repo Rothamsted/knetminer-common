@@ -1,0 +1,27 @@
+Configuration:
+  name: YAMLConfigTest
+  status: info
+  ThresholdFilter:
+    level: all
+  
+  Appenders:
+    Console:
+      name: ConsoleApp
+      target: SYSTEM_ERR
+      PatternLayout:
+        Pattern: "%date{HH:mm:ss.SSS} [%-5level]: %message%n"
+      Filters:
+        ThresholdFilter:
+          level: debug
+    File:
+      name: FileApp
+      fileName: target/test.log
+      PatternLayout:
+        Pattern: "%date{yyyy-MM-dd HH:mm:ss.SSS} [%-6thread] [%-5level] \\(%class{1},%line\\): %message%n"
+
+  Loggers:
+    Root:
+      level: all
+      AppenderRef:
+        - ref: ConsoleApp
+        - ref: FileApp

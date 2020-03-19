@@ -1,0 +1,27 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+  
+  <parent>
+		<groupId>uk.ac.rothamsted.knetminer</groupId>
+		<artifactId>knetminer-common</artifactId>
+		<version>1.0-SNAPSHOT</version>
+  </parent>
+  
+  <artifactId>knetminer-archetype</artifactId>
+  <name>knetminer-archetype - Template for Knetminer projects</name>
+  <description>TODO.</description>
+
+	<repositories>
+	  <repository>
+	  	<!-- 
+	  		As usually, this points to both releases and snapshots and caches Maven Central
+	  		plus other repos.
+	  	 -->
+			<id>archetype</id>
+			<name>Knetminer Unified Repository</name>
+			<url>https://knetminer.org/artifactory/repository/maven-public</url>
+			<snapshots><enabled>true</enabled></snapshots>
+			<releases><enabled>true</enabled></releases>
+	  </repository>
+	</repositories>
+</project>

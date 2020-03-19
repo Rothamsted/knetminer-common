@@ -1,0 +1,13 @@
+language: java
+jdk: openjdk8
+
+install:
+  # The common settings file used to build with Travis
+  - wget https://raw.githubusercontent.com/Rothamsted/knetminer-common/master/settings.xml
+
+script: 
+  - mvn deploy --settings settings.xml
+
+cache:
+  directories:
+    - $HOME/.m2
