@@ -5,6 +5,9 @@ install: echo "Skipping default installation step"
 
 script: 
   - mvn deploy --settings settings.xml
+  - git remote set-url origin https://marco-brandizi:$GIT_PASSWORD@Rothamsted/knetminer-common.git 
+  - git commit -a -m 'Updating Travis auto-generated files [ci skip]'
+  - git push origin HEAD:"$TRAVIS_BRANCH"
 
 cache:
   directories:
