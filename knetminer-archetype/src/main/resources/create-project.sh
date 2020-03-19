@@ -17,6 +17,7 @@ EOT
 	exit 1
 fi
 
+
 # First install the archetype
 mvn dependency:get \
   -Dartifact=${project.groupId}:${project.artifactId}:${project.version}\
