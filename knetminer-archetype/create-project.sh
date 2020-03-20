@@ -17,6 +17,7 @@ EOT
 	exit 1
 fi
 
+
 # First install the archetype
 mvn dependency:get \
   -Dartifact=uk.ac.rothamsted.knetminer:knetminer-archetype:1.0-SNAPSHOT\
