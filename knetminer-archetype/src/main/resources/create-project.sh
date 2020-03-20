@@ -20,9 +20,13 @@ fi
 
 # First get the archetype definition file, as per
 # https://maven.apache.org/archetype/maven-archetype-plugin/archetype-repository.html
+#
 settings="/tmp/knetminer-archetype-settings.xml"
-curl -L "" -o "$settings"
+curl -L "https://raw.githubusercontent.com/Rothamsted/knetminer-common/master/knetminer-archetype/settings.xml" \
+     -o "$settings"
+     
 # So that now we can use it
+#
 yes | mvn archetype:generate \
 	-DgroupId=$groupId -DartifactId=$artifactId -Dversion=$version \
 	-DarchetypeGroupId=${project.groupId} \
