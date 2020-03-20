@@ -34,6 +34,16 @@
 	  </repository>
 	</repositories>
 	
+	<pluginRepositories>
+		<pluginRepository>
+			<id>knetminer-plugin-repo</id>
+			<name>Knetminer Unified Repository</name>
+			<url>https://knetminer.org/artifactory/repository/maven-public</url>
+			<snapshots><enabled>true</enabled></snapshots>
+			<releases><enabled>true</enabled></releases>
+		</pluginRepository>
+	</pluginRepositories>
+	
 	<distributionManagement>
 	  <repository>
 			<id>knetminer-releases</id>
