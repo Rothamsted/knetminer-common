@@ -11,6 +11,7 @@ In this README, we list the resources you find here.
   * [Travis support files](#travis-support-files)
   * [Archetype for new projects](#archetype-for-new-projects)
   * [Other common files](#other-common-files)
+  * [Usage examples](#usage-examples)
   
 ## Common parent POM
 
@@ -155,3 +156,12 @@ In addition to the files mentioned in the other sections, other relevant ones ar
 
   * [.gitignore](knetminer-archetype/.gitignore), which defines common files you don't want to version
   * More to come (TODO)
+
+
+## Usage examples
+
+For more details on how to use the material in this repository, have a look at real use cases:
+
+  * [rdf2neo](https://github.com/Rothamsted/rdf2neo)
+  * More to come (TODO)
+ 
