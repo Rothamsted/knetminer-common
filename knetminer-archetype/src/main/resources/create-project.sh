@@ -34,5 +34,3 @@ yes | mvn archetype:generate \
 	-DarchetypeVersion=${project.version} \
 	-DinteractiveMode=false \
 	-Dsettings="$settings"
-
-	
