@@ -21,6 +21,7 @@ mvn dependency:get \
   -Dartifact=${project.groupId}:${project.artifactId}:${project.version}\
   -DremoteRepositories=https://knetminer.org/artifactory/repository/maven-public
 
+
 # First get the archetype definition file, as per
 # https://maven.apache.org/archetype/maven-archetype-plugin/archetype-repository.html
 #
