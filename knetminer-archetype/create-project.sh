@@ -18,17 +18,19 @@ EOT
 fi
 
 
-# First install the archetype
-mvn dependency:get \
-  -Dartifact=uk.ac.rothamsted.knetminer:knetminer-archetype:1.0-SNAPSHOT\
-  -DremoteRepositories=https://knetminer.org/artifactory/repository/maven-public
-
+# First get the archetype definition file, as per
+# https://maven.apache.org/archetype/maven-archetype-plugin/archetype-repository.html
+#
+settings="/tmp/knetminer-archetype-settings.xml"
+curl -L "https://raw.githubusercontent.com/Rothamsted/knetminer-common/master/knetminer-archetype/settings.xml" \
+     -o "$settings"
+     
 # So that now we can use it
-set -x
+#
 yes | mvn archetype:generate \
 	-DgroupId=$groupId -DartifactId=$artifactId -Dversion=$version \
 	-DarchetypeGroupId=uk.ac.rothamsted.knetminer \
 	-DarchetypeArtifactId=knetminer-archetype \
 	-DarchetypeVersion=1.0-SNAPSHOT \
-	-DinteractiveMode=false
-	
+	-DinteractiveMode=false \
+	-Dsettings="$settings"
