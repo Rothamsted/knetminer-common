@@ -6,11 +6,11 @@ manage Maven-based projects, or other utilities (eg, maintenance scripts).
 In this README, we list the resources you find here.
 
 ## Index
-	- [Common parent POM](#common-parent-pom)
-	- [Deployment on our artifactory server](#deployment-on-our-artifactory-server)
-	- [Travis support files](#travis-support-files)
-	- [Archetype for new projects](#archetype-for-new-projects)
-	- [Other common files](#other-common-files)
+  * [Common parent POM](#common-parent-pom)
+  * [Deployment on our artifactory server](#deployment-on-our-artifactory-server)
+  * [Travis support files](#travis-support-files)
+  * [Archetype for new projects](#archetype-for-new-projects)
+  * [Other common files](#other-common-files)
   
 ## Common parent POM
 
