@@ -5,7 +5,7 @@ install:
   # The common settings file used to build with Travis
   - wget https://raw.githubusercontent.com/Rothamsted/knetminer-common/master/settings.xml
 
-script: 
+script:
   - mvn deploy --settings settings.xml
 
 cache:

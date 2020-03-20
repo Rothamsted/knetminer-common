@@ -3,7 +3,8 @@ jdk: openjdk8
 
 install: echo "Skipping default installation step"
 
-script: 
+script:
+  - set -e
   - mvn deploy --settings settings.xml
   - git remote set-url origin https://$GIT_USER:$GIT_PASSWORD@github.com/Rothamsted/knetminer-common.git 
   - if ! git diff-index --quiet HEAD; then
