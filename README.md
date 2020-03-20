@@ -58,9 +58,9 @@ Your project can be linked to this common POM the usual way:
 ```
 
 This will link your project to our artifactory server, which manages, among other things, Ondex artifacts, Knetminer
-artifacts and a cache from Maven central. You can add more proxied Maven repositories to it, if you've the right credentials (else, just ask
-the Knetminer team admins). This makes builds faster and avoids to list those repositories in every POM where you need
-them (just the knetminer-repo listed above is needed).
+artifacts and a cache from Maven central. You can add more proxied Maven repositories to it, if you've the right 
+credentials (else, just ask the Knetminer team admins). This makes builds faster and avoids to list those repositories 
+in every POM where you need them (just the knetminer-repo listed above is needed).
 
 As usually, it also makes you available a number of dependencies, either about our own projects or third-parties, which
 youn can refer without having to specifying a version to use. For instance this:
