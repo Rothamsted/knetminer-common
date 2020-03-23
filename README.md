@@ -5,14 +5,18 @@ manage Maven-based projects, or other utilities (eg, maintenance scripts).
 
 In this README, we list the resources you find here.
 
+
 ## Index
+
   * [Common parent POM](#common-parent-pom)
   * [Deployment on our artifactory server](#deployment-on-our-artifactory-server)
+  * [Using multiple deployment profiles](#using-multiple-deployment-profiles)
   * [Travis support files](#travis-support-files)
   * [Archetype for new projects](#archetype-for-new-projects)
   * [Other common files](#other-common-files)
   * [Usage examples](#usage-examples)
-  
+
+    
 ## Common parent POM
 
 this is [here](pom.xml), just next to this hereby document. This can be used with either new or existing projects,
@@ -111,6 +115,52 @@ them are the same defined in `settings.xml`. Maven has alternatives to do so (eg
 preferred way to deploy your project is via Travis automation (see the next section).
 
 [20]: settings.xml
+
+
+## Using multiple deployment profiles
+
+It's a common practice to set different profiles in a project's POM, so that it's possible to deploy the project in 
+different repositories. If that's your case (eg, you're working with a third-party fork), we provide Maven properties 
+to do so. In addition to the steps above, (mention our POM in your `<parent>` section and add our artifactory server 
+in `<repositories>`), you can define a profile like:
+  
+```xml
+<profile>
+	<id>knetminer-deploy</id>
+	<distributionManagement>
+	  <repository>
+			<id>${knetminer.mvnrepo.rel.id}</id>
+			<name>${knetminer.mvnrepo.rel.name}</name>
+			<url>${knetminer.mvnrepo.rel.url}</url>
+	  </repository>
+	  <snapshotRepository>
+			<id>${knetminer.mvnrepo.snapshots.id}</id>
+			<name>${knetminer.mvnrepo.snapshots.name}</name>
+			<url>${knetminer.mvnrepo.snapshots.url}</url>
+	  </snapshotRepository>
+	</distributionManagement>
+</profile>
+
+```
+
+and then use `mvn deploy -Pknetminer-deploy` as usually. Alternatively, if your project is already using properties
+in the `<distributionManagement>` section and overriding them with profiles, you can do:
+
+```xml
+<profile>
+	<id>knetminer-deploy</id>
+
+	<properties>
+		<your.prop.rel.id>${knetminer.mvnrepo.rel.id}</your.prop.rel.id>
+		<your.prop.rel.name>${knetminer.mvnrepo.rel.name}</your.prop.rel.name>		
+		<your.prop.rel.url>${knetminer.mvnrepo.rel.url}</your.prop.rel.url>
+
+		<your.prop.snapshots.id>${knetminer.mvnrepo.snapshots.id}</your.prop.snapshots.id>
+		<your.prop.snapshots.name>${knetminer.mvnrepo.snapshots.name}</your.prop.snapshots.name>		
+		<your.prop.snapshots.url>${knetminer.mvnrepo.snapshots.url}</your.prop.snapshots.url>
+	</properties>
+</properties>
+```
 
 
 ## Travis support files

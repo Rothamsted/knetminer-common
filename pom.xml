@@ -18,6 +18,16 @@
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		
 		<jutils.version>9.0.1-SNAPSHOT</jutils.version>
+		
+		<!-- These are defined as properties, so that you can reuse/override them, eg, in a profile -->
+		<knetminer.mvnrepo.rel.id>knetminer-releases</knetminer.mvnrepo.rel.id>
+		<knetminer.mvnrepo.rel.name>Internal Releases</knetminer.mvnrepo.rel.name>
+		<knetminer.mvnrepo.rel.url>https://knetminer.org/artifactory/repository/maven-releases</knetminer.mvnrepo.rel.url>
+		
+		<knetminer.mvnrepo.snapshots.id>knetminer-snapshots</knetminer.mvnrepo.snapshots.id>
+		<knetminer.mvnrepo.snapshots.name>Internal Snapshots</knetminer.mvnrepo.snapshots.name>
+		<knetminer.mvnrepo.snapshots.url>https://knetminer.org/artifactory/repository/maven-snapshots</knetminer.mvnrepo.snapshots.url>
+			
 	</properties>  
 
 	<repositories>
@@ -45,15 +55,16 @@
 	</pluginRepositories>
 	
 	<distributionManagement>
+				
 	  <repository>
-			<id>knetminer-releases</id>
-			<name>Internal Releases</name>
-			<url>https://knetminer.org/artifactory/repository/maven-releases</url>
+			<id>${knetminer.mvnrepo.rel.id}</id>
+			<name>${knetminer.mvnrepo.rel.name}</name>
+			<url>${knetminer.mvnrepo.rel.url}</url>
 	  </repository>
 	  <snapshotRepository>
-			<id>knetminer-snapshots</id>
-			<name>Internal Snapshots</name>
-			<url>https://knetminer.org/artifactory/repository/maven-snapshots</url>
+			<id>${knetminer.mvnrepo.snapshots.id}</id>
+			<name>${knetminer.mvnrepo.snapshots.name}</name>
+			<url>${knetminer.mvnrepo.snapshots.url}</url>
 	  </snapshotRepository>
 	</distributionManagement>				
 
