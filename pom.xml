@@ -10,11 +10,13 @@
   <name>knetminer-common (common POM for Knetminer projects)</name>
   
 	<properties>
-		<!-- 
+		<!--
 			TODO: it will become 11 or more at some point.
-			You can override it in your projects 
+			You can override it in your projects.
 		-->
-		<java.version>1.8</java.version>
+		<maven.compiler.source>1.8</maven.compiler.source>
+		<maven.compiler.target>${maven.compiler.source}</maven.compiler.target>
+		<java.version>${maven.compiler.source}</java.version>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		
 		<jutils.version>9.0.1-SNAPSHOT</jutils.version>
