@@ -21,7 +21,7 @@ mvn deploy --settings "travis/maven-settings.xml"
 
 if git diff-index --quiet HEAD; then
 	needs_push='true'
-	git commit -a -m 'Updating Travis auto-generated files [ci skip]';
+	git commit -a -m "Updating Travis auto-generated files.${ci_skip_tag}";
 fi
 
 # Will git need to be updated on remote?
