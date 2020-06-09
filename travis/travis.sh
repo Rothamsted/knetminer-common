@@ -55,7 +55,7 @@ if [[ ! -z "$needs_push" ]]; then
 	fi
 	
 	git_url=`echo "$git_url" | sed -E "s|http(s?)://|http\1://$GIT_USER:$GIT_PASSWORD@|"`
-	git remote set-url origin https://$GIT_USER:$GIT_PASSWORD@github.com/Rothamsted/knetminer-common.git
+	git remote set-url origin "$git_url"
 
 	# It seems that Travis auto-pushes tags
 	git push --force --tags origin HEAD:"$TRAVIS_BRANCH"
