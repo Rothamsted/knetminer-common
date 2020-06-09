@@ -103,7 +103,7 @@ where this README is):.
 
 ```bash
 $ cd <where your POM and project is>
-$ curl https://raw.githubusercontent.com/Rothamsted/knetminer-common/master/settings.xml \
+$ curl https://raw.githubusercontent.com/Rothamsted/knetminer-common/master/travis/maven-settings.xml \
   settings.xml
 $ export KNET_REPO_USER=<your-user>
 $ export KNET_REPO_PASSWORD=<your-password>
@@ -111,10 +111,10 @@ $ mvn clean deploy --settings settings.xml
 ```
 
 As you can see, you need an account to write into our artifactory server. The OS variables used to define
-them are the same defined in `settings.xml`. Maven has alternatives to do so (eg, `.m2/settings.xml`), though the 
+them are the same defined in `maven-settings.xml`. Maven has alternatives to do so (eg, `.m2/settings.xml`), though the 
 preferred way to deploy your project is via Travis automation (see the next section).
 
-[20]: settings.xml
+[20]: travis/maven-settings.xml
 
 
 ## Using multiple deployment profiles

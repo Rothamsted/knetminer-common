@@ -8,10 +8,10 @@ install:
   # The common settings file used to build with Travis, downloaded in a bootstrap fashion
   - mkdir -p travis
   - wget "$TRAVIS_DIR_URL/install.sh" -O travis/install.sh
-  - ./travis/install.sh
+  - bash ./travis/install.sh
 
 script:
-  - ./travis.sh
+  - bash ./travis.sh
 
 cache:
   directories:
