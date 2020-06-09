@@ -8,7 +8,7 @@ ci_skip_tag=' [ci skip]'
 # Manage releasing too, when these vars are defined
 #
 if [[ ! -z "${NEW_RELEASE_VER}" ]] && [[ ! -z "${NEW_SNAPSHOT_VER}" ]]; then 
-  echo -e "\n\n\tRELEASSING ${NEW_RELEASE_VER}, new snapshot will be: ${NEW_SNAPSHOT_VER}\n" 
+  echo -e "\n\n\tRELEASING ${NEW_RELEASE_VER}, new snapshot will be: ${NEW_SNAPSHOT_VER}\n" 
   is_release='true'
 fi
   
@@ -18,11 +18,12 @@ if [[ ! -z "$is_release" ]]; then
   mvn versions:commit
 fi
 
+echo -e "\n\n\tMaven Depolyment"
 mvn deploy --settings "travis/maven-settings.xml"
 
 if ! git diff-index --exit-code --quiet HEAD; then
 	needs_push='true'
-	git commit -a -m "Updating Travis auto-generated files.${ci_skip_tag}";
+	git commit -a -m "Updating Travis auto-generated files.${ci_skip_tag}"
 fi
 
 # Will git need to be updated on remote?
