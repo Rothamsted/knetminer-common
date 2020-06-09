@@ -15,7 +15,7 @@ install:
   - bash ./travis/install.sh
 
 script:
-  - bash ./travis.sh
+  - bash ./travis/travis.sh
 
 cache:
   directories:
