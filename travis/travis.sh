@@ -49,7 +49,7 @@ if [[ ! -z "$needs_push" ]]; then
 	
 	git_url=`git remote -v | awk '$NR=2 {print $2; exit}'`
 	if [[ "$git_url" =~ ^https?://.+ ]]; then
-		echo "ERROR: No remote git URL or unsupported format (only http(s):// supported)."
+		echo "ERROR: No remote git URL or unsupported format for '$git_url'."
 		exit 1
 	fi
 	
