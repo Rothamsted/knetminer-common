@@ -1,4 +1,4 @@
-set -e
+set -e -x
 
 cd `dirname "$0"`
 cd ..
