@@ -19,7 +19,7 @@ In this README, we list the resources you find here.
     
 ## Common parent POM
 
-this is [here](pom.xml), just next to this hereby document. This can be used with either new or existing projects,
+This is [here](pom.xml), just next to this hereby document. This can be used with either new or existing projects,
 to put in place some common definitions that you need to deploy on our [artifactory service][10], or to harmonise the
 third-party Maven dependencies we use for our projects.
 
