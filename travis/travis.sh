@@ -21,7 +21,7 @@ fi
 
 mvn deploy --settings "travis/maven-settings.xml"
 
-if git diff-index --quiet HEAD; then
+if ! git diff-index --exit-code --quiet HEAD; then
 	needs_push='true'
 	git commit -a -m "Updating Travis auto-generated files.${ci_skip_tag}";
 fi
