@@ -48,7 +48,7 @@ if [[ ! -z "$needs_push" ]]; then
 	echo -e "\n\n\tPushing changes to github\n"
 	
 	git_url=`git remote -v | awk '$NR=2 {print $2; exit}'`
-	if [[ "$git_url" =~ ^https?://.+ ]]; then
+	if [[ ! "$git_url" =~ ^https?://.+ ]]; then
 		echo "ERROR: No remote git URL or unsupported format for '$git_url'."
 		exit 1
 	fi
