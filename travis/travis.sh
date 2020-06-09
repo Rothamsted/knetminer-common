@@ -53,7 +53,7 @@ if [[ ! -z "$needs_push" ]]; then
 		exit 1
 	fi
 	
-	git_url=`echo "$git_url" | sed -E "s|http(s?)://|http\1://$GIT_USER:$GIT_PASSWORD@'"`
+	git_url=`echo "$git_url" | sed -E "s|http(s?)://|http\1://$GIT_USER:$GIT_PASSWORD@|"`
 	git remote set-url origin https://$GIT_USER:$GIT_PASSWORD@github.com/Rothamsted/knetminer-common.git
 	git push --tags origin HEAD:"$TRAVIS_BRANCH";
 fi
