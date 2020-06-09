@@ -4,9 +4,6 @@ cd ..
 
 ci_skip_tag=' [ci skip]'
 
-# First of all, let's fix the detached head problem with Travis
-git reset --hard HEAD
-
 # Manage releasing too, when these vars are defined
 #
 if [[ ! -z "${NEW_RELEASE_VER}" ]] && [[ ! -z "${NEW_SNAPSHOT_VER}" ]]; then 
@@ -59,8 +56,8 @@ if [[ ! -z "$needs_push" ]]; then
 	
 	git_url=`echo "$git_url" | sed -E "s|http(s?)://|http\1://$GIT_USER:$GIT_PASSWORD@|"`
 	git remote set-url origin https://$GIT_USER:$GIT_PASSWORD@github.com/Rothamsted/knetminer-common.git
-	git push
-	git push --tags
+
+	git push --tags origin HEAD:"$TRAVIS_BRANCH"
 fi
 
 echo -e "\n\nThe End."
