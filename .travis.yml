@@ -4,17 +4,7 @@ jdk: openjdk8
 install: echo "Skipping default installation step"
 
 script:
-  - set -e
-  - mvn deploy --settings settings.xml
-  - git remote set-url origin https://$GIT_USER:$GIT_PASSWORD@github.com/Rothamsted/knetminer-common.git
-  - set +e 
-    # We have artifacts that update the codebase, so, let's commit changes if needed
-  - if ! git diff-index --quiet HEAD; then
-      git commit -a -m 'Updating Travis auto-generated files [ci skip]';
-      git push origin HEAD:"$TRAVIS_BRANCH";
-    else
-      echo "No Travis update for Git";
-    fi;
+  - ./travis/travis.sh
 
 cache:
   directories:
