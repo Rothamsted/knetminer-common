@@ -37,7 +37,8 @@ if [[ ! -z "$is_release" ]]; then
 	echo -e "\n\n\tCommitting ${NEW_RELEASE_VER} to github\n"
 	msg="Releasing ${NEW_RELEASE_VER}.${ci_skip_tag}"
 	git commit -a -m "$msg"
-	git tag --annotate "${NEW_RELEASE_VER}" -m "$msg"
+	# For some reason, in Travis it results already tagged tat this point.
+	git tag --force --annotate "${NEW_RELEASE_VER}" -m "$msg"
 	
 	echo -e "\n\n\tSwitching codebase version to ${NEW_SNAPSHOT_VER}\n"
 	mvn versions:set -DnewVersion="${NEW_SNAPSHOT_VER}" -DallowSnapshots=true
