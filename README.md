@@ -165,17 +165,24 @@ in the `<distributionManagement>` section and overriding them with profiles, you
 
 ## Travis support files
 You don't need to deploy from you working PC, manually. We use CI systems nowadays, and
-our preferred ones is Travis(1[30], 2[40]). You can reuse our [standard Travis file][50]. As you can see, this
+our preferred ones is Travis([1][30], [2][40]). You can reuse our [standard Travis file][50]. As you can see, this
 does the very minimal, that is: 
 
 	1. Defines common stuff like the Java version to use for the build
-  1. Downloads the [settings file][20] discussed above
-  1. Issues 'mvn deploy' using those settings
+  1. Downloads common files and scripts we use to build
+  1. Runs the downloaded `travis/travis.sh`
   1. Keeps Maven files into a cache, to ensure performance (and contribute to the environment...)
 
-Once you have copied that file into your Maven project, these basics can customised as you need.
-Note that this requires that you define the right credential variables (the ones used by `settings.xml`, see above)
-in the [Travis settings for your project][60]. 
+This assumes that you define authentication values, via [Travis settings][60].
+
+The `travis.sh` script is designed to manage releases. If you define proper variables (see our [`.travis.yml`][50], 
+about the new release version you want and the next Maven snapshot version, the script will issue a release, move
+the POM to the next snapshot, commit everything on GitHub. Again, you'll need to define your github credentials,
+in order to push new tags.
+
+This version is designed to completely automate the download of our build files into your local
+project copy, every time you build (from Travis). You might need some customisation, by working
+with copies of the files above.
  
 
 [30]: https://www.vogella.com/tutorials/TravisCi/article.html
@@ -192,10 +199,10 @@ to make Maven projects. In our case, you can quickly create a new project with a
 above (inheritance from the common POM, basic Travis file) and more (eg, common files like `.gitignore`, see 
 the next section).  
 
-Details on how to use the archetype are available in its README.
+Details on how to use the archetype are available in its [README][80].
 
 [70]: https://maven.apache.org/archetype/maven-archetype-plugin/index.html
-
+[80]: knetminer-archetype/README.md
 
 ## Other common files
 

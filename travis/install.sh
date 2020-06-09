@@ -8,5 +8,5 @@ cd `dirname "$0"`
 #
 for file in maven-settings.xml travis.sh 
 do
-	wget "$TRAVIS_DIR_URL/master/travis/$file" -O "$file"
+	wget "$TRAVIS_DIR_URL/$file" -O "$file"
 done
