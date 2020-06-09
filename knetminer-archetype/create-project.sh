@@ -20,7 +20,7 @@ fi
 
 # First, download the archetype
 mvn dependency:get \
-  -Dartifact=uk.ac.rothamsted.knetminer:knetminer-archetype:1.0-TEST-9\
+  -Dartifact=uk.ac.rothamsted.knetminer:knetminer-archetype:1.0-TEST-10\
   -DremoteRepositories=https://knetminer.org/artifactory/repository/maven-public
      
 # So that now we can use it from the local repo
@@ -29,5 +29,5 @@ mvn archetype:generate \
 	-DgroupId=$groupId -DartifactId=$artifactId -Dversion=$version \
 	-DarchetypeGroupId=uk.ac.rothamsted.knetminer \
 	-DarchetypeArtifactId=knetminer-archetype \
-	-DarchetypeVersion=1.0-TEST-9 \
+	-DarchetypeVersion=1.0-TEST-10 \
 	-DinteractiveMode=false 
