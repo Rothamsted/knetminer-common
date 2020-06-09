@@ -18,10 +18,10 @@ if [[ ! -z "$is_release" ]]; then
   mvn versions:commit
 fi
 
-echo -e "\n\n\tMaven Depolyment\n"
+echo -e "\n\n\tMaven Deployment\n"
 mvn deploy --settings "travis/maven-settings.xml"
 
-if ! git diff --exit-code HEAD; then
+if ! git diff --exit-code --quiet HEAD; then
 	needs_push='true'
 	git commit -a -m "Updating Travis auto-generated files.${ci_skip_tag}"
 fi
@@ -34,10 +34,8 @@ fi
 #
 if [[ ! -z "$is_release" ]]; then
 	echo -e "\n\n\tCommitting ${NEW_RELEASE_VER} to github\n"
-	msg="Releasing ${NEW_RELEASE_VER}.${ci_skip_tag}"
-	git commit -a -m "$msg"
 	# For some reason, in Travis it results already tagged at this point.
-	git tag --force --annotate "${NEW_RELEASE_VER}" -m "$msg"
+	git tag --force --annotate "${NEW_RELEASE_VER}" -m "Releasing ${NEW_RELEASE_VER}.${ci_skip_tag}"
 	
 	echo -e "\n\n\tSwitching codebase version to ${NEW_SNAPSHOT_VER}\n"
 	mvn versions:set -DnewVersion="${NEW_SNAPSHOT_VER}" -DallowSnapshots=true
