@@ -214,4 +214,3 @@ For more details on how to use the material in this repository, have a look at r
 
   * [rdf2neo](https://github.com/Rothamsted/rdf2neo)
   * More to come (TODO)
- 
