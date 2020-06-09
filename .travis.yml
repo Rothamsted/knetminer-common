@@ -3,9 +3,9 @@ jdk: openjdk8
 
 env:
   # Use these to trigger a release. You can also uncomment them in a custom config that you can
-  # pass to the manual build trigger (in the web interface).  
-  # - NEW_RELEASE_VER=1.0-TEST
-  # - NEW_SNAPSHOT_VER='1.0-SNAPSHOT'
+  # pass to the manual build trigger (in the web interface).
+  # Note that these two cannot go into multiple lines, else Travis interprets them as multiple builds  
+  # - NEW_RELEASE_VER='1.0-TEST' NEW_SNAPSHOT_VER='1.0-SNAPSHOT'
 
 install: echo "Skipping default installation step"
 
