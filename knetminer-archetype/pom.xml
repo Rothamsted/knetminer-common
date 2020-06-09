@@ -38,6 +38,10 @@
 					<exclude>create-project.sh</exclude>
 				</excludes>
 			</resource>
+			<!-- 
+				This uses filtering to produce a version of the script that embeds the right
+				Maven project version
+			-->
 			<resource>
 				<directory>src/main/resources</directory>
 				<includes>

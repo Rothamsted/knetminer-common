@@ -18,7 +18,7 @@ if [[ ! -z "$is_release" ]]; then
   mvn versions:commit
 fi
 
-echo -e "\n\n\tMaven Depolyment"
+echo -e "\n\n\tMaven Depolyment\n"
 mvn deploy --settings "travis/maven-settings.xml"
 
 if ! git diff-index --exit-code --quiet HEAD; then
