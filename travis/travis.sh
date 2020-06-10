@@ -1,4 +1,4 @@
-set -e -x
+set -e
 
 cd `dirname "$0"`
 cd ..
@@ -48,14 +48,8 @@ fi
 if [[ ! -z "$needs_push" ]]; then
 	echo -e "\n\n\tPushing changes to github\n"
 	
-	git_url=`git remote -v | awk '$NR=2 {print $2; exit}'`
-	if [[ ! "$git_url" =~ ^https?://.+ ]]; then
-		echo "ERROR: No remote git URL or unsupported format for '$git_url'."
-		exit 1
-	fi
-	
-	git_url=`echo "$git_url" | sed -E "s|http(s?)://|http\1://$GIT_USER:$GIT_PASSWORD@|"`
-	git remote set-url origin "$git_url"
+	# Will replace regular URL with this. Vars come from Travis settings.
+	git config --global "url.https://$GIT_USER:$GIT_PASSWORD@github.com.insteadof" "https://github.com"	
 
 	# It seems that Travis auto-pushes tags
 	git push --force --tags origin HEAD:"$TRAVIS_BRANCH"
