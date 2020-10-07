@@ -52,7 +52,8 @@ if [[ ! -z "$needs_push" ]]; then
 	git config --global "url.https://$GIT_USER:$GIT_PASSWORD@github.com.insteadof" "https://github.com"	
 
 	# It seems that Travis auto-pushes tags
-	git push --force --tags origin HEAD:"$TRAVIS_BRANCH"
+	# TODO: Requires testing, maybe it messes up with the assigned release tag
+  git push --force --tags origin HEAD:"$TRAVIS_BRANCH"
 fi
 
 echo -e "\n\nThe End."
