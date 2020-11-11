@@ -1,7 +1,7 @@
 language: java
-jdk: openjdk8
+jdk: openjdk11
 
-env:
+#env:
   # Use these to trigger a release. You can also uncomment them in a custom config that you can
   # pass to the manual build trigger (in the web interface).
   # Note that these two cannot go into multiple lines, else Travis interprets them as multiple builds
