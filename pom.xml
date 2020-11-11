@@ -4,22 +4,20 @@
   
   <groupId>uk.ac.rothamsted.knetminer</groupId>
   <artifactId>knetminer-common</artifactId>
-  <version>1.0.1-SNAPSHOT</version>
+  <version>2.0-SNAPSHOT</version>
   <packaging>pom</packaging>
   
   <name>knetminer-common (common POM for Knetminer projects)</name>
   
 	<properties>
-		<!--
-			TODO: it will become 11 or more at some point.
-			You can override it in your projects.
-		-->
-		<maven.compiler.source>1.8</maven.compiler.source>
+		<maven.compiler.source>11</maven.compiler.source>
 		<maven.compiler.target>${maven.compiler.source}</maven.compiler.target>
 		<java.version>${maven.compiler.source}</java.version>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		
-		<jutils.version>9.0.1-SNAPSHOT</jutils.version>
+		<jutils.version>10.0-SNAPSHOT</jutils.version>
+		<springframework.version>5.3.1</springframework.version>
+		
 		
 		<!-- These are defined as properties, so that you can reuse/override them, eg, in a profile -->
 		<knetminer.mvnrepo.rel.id>knetminer-releases</knetminer.mvnrepo.rel.id>
@@ -96,7 +94,7 @@
 		  <dependency>
 		    <groupId>junit</groupId>
 		    <artifactId>junit</artifactId>
-		    <version>4.13</version>
+		    <version>4.13.1</version>
 		    <scope>test</scope>
 		  </dependency>
 			
@@ -120,7 +118,29 @@
 			  <version>2.10.2</version>
 			</dependency>
 			
-		</dependencies>	
+			<dependency>
+				<groupId>org.springframework</groupId>
+				<artifactId>spring-core</artifactId>
+				<version>${springframework.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>org.springframework</groupId>
+				<artifactId>spring-context</artifactId>
+				<version>${springframework.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>org.springframework</groupId>
+				<artifactId>spring-web</artifactId>
+				<version>${springframework.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>org.springframework</groupId>
+				<artifactId>spring-webmvc</artifactId>
+				<version>${springframework.version}</version>
+			</dependency>
+			
+		</dependencies>
+			
 	</dependencyManagement>
 	
 	<build>
