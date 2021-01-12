@@ -4,6 +4,7 @@ cd `dirname "$0"`
 cd ..
 
 ci_skip_tag='[ci skip]'
+mvn_opts='--no-transfer-progress --batch-mode'
 
 if [[ `git log -1 --pretty=format:"%s"` =~ "$ci_skip_tag" ]]; then
 	echo -e "\n$ci_skip_tag prefix, ignoring this commit\n"
@@ -32,9 +33,9 @@ if [[ ! -z "${NEW_RELEASE_VER}" ]] && [[ ! -z "${NEW_SNAPSHOT_VER}" ]]; then
 fi
   
 if [[ ! -z "$is_release" ]]; then
-  mvn versions:set -DnewVersion="${NEW_RELEASE_VER}" -DallowSnapshots=true
+  mvn versions:set -DnewVersion="${NEW_RELEASE_VER}" -DallowSnapshots=true $mvn_opts
   # Commit immediately, even if it fails, we will have a chance to give up
-  mvn versions:commit
+  mvn versions:commit $mvn_opts
 fi
 
 if [[ "$GIT_BRANCH" == 'master' ]]; then 
@@ -45,7 +46,7 @@ else
 	maven_goal='install'
 fi
 
-mvn $maven_goal --settings "ci-build/maven-settings.xml"
+mvn $maven_goal --settings "ci-build/maven-settings.xml" $mvn_opts
 
 if [[ "$GIT_BRANCH" != 'master' ]]; then
   echo -e "\n\n\tNot in the main repo, and/or not in the master branch, build ends here. Bye.\n"
@@ -69,8 +70,8 @@ if [[ ! -z "$is_release" ]]; then
 	git tag --force --annotate "${NEW_RELEASE_VER}" -m "Releasing ${NEW_RELEASE_VER}. ${ci_skip_tag}"
 	
 	echo -e "\n\n\tSwitching codebase version to ${NEW_SNAPSHOT_VER}\n"
-	mvn versions:set -DnewVersion="${NEW_SNAPSHOT_VER}" -DallowSnapshots=true
-	mvn versions:commit
+	mvn versions:set -DnewVersion="${NEW_SNAPSHOT_VER}" -DallowSnapshots=true $mvn_opts
+	mvn versions:commit $mvn_opts
 	git commit -a -m "Switching version to ${NEW_SNAPSHOT_VER}. ${ci_skip_tag}"
 fi
 
