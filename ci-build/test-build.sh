@@ -2,8 +2,8 @@
 #
 set -e
 
-#export NEW_RELEASE_VER='_test_v1'
-#export NEW_SNAPSHOT_VER='2.0-SNAPSHOT'
+#export NEW_RELEASE_VER='2.0RC1'
+#export NEW_SNAPSHOT_VER='2.0.1-SNAPSHOT'
 
 export GIT_USER=marco-brandizi
 export GIT_USER_EMAIL=marco.brandizi@rothamsted.ac.uk
