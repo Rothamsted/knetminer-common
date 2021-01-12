@@ -53,6 +53,7 @@ if [[ "$GIT_BRANCH" != 'master' ]]; then
 	exit
 fi
 
+
 if ! git diff --exit-code --quiet HEAD; then
 	needs_push='true'
 	git commit -a -m "Updating CI auto-generated files. ${ci_skip_tag}"
