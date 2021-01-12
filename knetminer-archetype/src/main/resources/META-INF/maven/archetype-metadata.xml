@@ -25,7 +25,7 @@
     <fileSet encoding="UTF-8">
       <directory></directory>
       <includes>
-        <include>.travis.yml</include>
+        <include>.github/**/*</include>
       </includes>
     </fileSet>
   </fileSets>

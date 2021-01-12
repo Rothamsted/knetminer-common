@@ -11,7 +11,7 @@ In this README, we list the resources you find here.
   * [Common parent POM](#common-parent-pom)
   * [Deployment on our artifactory server](#deployment-on-our-artifactory-server)
   * [Using multiple deployment profiles](#using-multiple-deployment-profiles)
-  * [Travis support files](#travis-support-files)
+  * [Continuous integration support files](#continuous-integration-support-files)
   * [Archetype for new projects](#archetype-for-new-projects)
   * [Other common files](#other-common-files)
   * [Usage examples](#usage-examples)
@@ -87,8 +87,8 @@ common dependencies aligned. On the other hand, your builds might break more oft
 if you're using a SNAPSHOT version of it.
 
 **Note to maintainers**: if you have access to the hereby common POM, be careful with upgrading a managed dependency.
-Possibly trigger Travis and Jenkins builds around manually and check they still succeed. If needed, increase the POM
-version.
+Possibly trigger CI builds manually (including internal Jenkins jobs) and check they still succeed. If needed, 
+increase the POM version.
 
 More elements are defined in the common POM for you, like the UTF-8 encoding, the default Java version, etc. 
 More can be added, either by yourself, if you've admin rights, or upon request. Like dependencies, these are all defaults,
@@ -98,12 +98,12 @@ which can be overriden when needed.
 ## Deployment on our artifactory server
 
 Once your project is linked to our common POM, it's easy to deploy it into our artifactory server.
-This can be done by using our common Maven settings file (included [hereby][20], in the same projec 
-where this README is):.
+This can be done by using our common Maven settings file (included [hereby][20], in the same project 
+where this hereby README is):.
 
 ```bash
 $ cd <where your POM and project is>
-$ curl https://raw.githubusercontent.com/Rothamsted/knetminer-common/master/travis/maven-settings.xml \
+$ curl https://raw.githubusercontent.com/Rothamsted/knetminer-common/master/ci-build/maven-settings.xml \
   settings.xml
 $ export KNET_REPO_USER=<your-user>
 $ export KNET_REPO_PASSWORD=<your-password>
@@ -112,9 +112,9 @@ $ mvn clean deploy --settings settings.xml
 
 As you can see, you need an account to write into our artifactory server. The OS variables used to define
 them are the same defined in `maven-settings.xml`. Maven has alternatives to do so (eg, `.m2/settings.xml`), though the 
-preferred way to deploy your project is via Travis automation (see the next section).
+preferred way to deploy your project is via CI automation (see the next section).
 
-[20]: travis/maven-settings.xml
+[20]: ci-build/maven-settings.xml
 
 
 ## Using multiple deployment profiles
@@ -163,43 +163,46 @@ in the `<distributionManagement>` section and overriding them with profiles, you
 ```
 
 
-## Travis support files
+## Continuous integration support files
 You don't need to deploy from you working PC, manually. We use CI systems nowadays, and
-our preferred ones is Travis([1][30], [2][40]). You can reuse our [standard Travis file][50]. As you can see, this
+our current one is [GitHub Actions][30]. You can reuse our [common GH Actions file][50]. As you can see, this
 does the very minimal, that is: 
 
 	1. Defines common stuff like the Java version to use for the build
   1. Downloads common files and scripts we use to build
-  1. Runs the downloaded `travis/travis.sh`
+  1. Runs the downloaded `ci-build/build.sh`
   1. Keeps Maven files into a cache, to ensure performance (and contribute to the environment...)
 
-This assumes that you define authentication values, via [Travis settings][60].
+This assumes that you define authentication values, via [GitHub Actions secrets][60].
 
-The `travis.sh` script is designed to manage releases. If you define proper variables (see our [`.travis.yml`][50], 
-about the new release version you want and the next Maven snapshot version, the script will issue a release, move
-the POM to the next snapshot, commit everything on GitHub. Again, you'll need to define your github credentials,
-in order to push new tags.
+The `build.sh` script is designed to manage releases as well. You can run a build manually, from the GH Actions 
+control panel. From there, set proper variables there about the new release version you want and the next Maven 
+snapshot version you want the codebase to be updated with, and the script will issue a release, move the POM to 
+the next snapshot, commit everything on GitHub.      
+
+Again, you'll need to define your github credentials, in order to push new tags.
 
 This version is designed to completely automate the download of our build files into your local
-project copy, every time you build (from Travis). You might need some customisation, by working
-with copies of the files above.
- 
+project copy, every time you build (from GH Actions). You might need some customisation, by working
+with copies of the files above.  
 
-[30]: https://www.vogella.com/tutorials/TravisCi/article.html
-[40]: https://docs.travis-ci.com/user/tutorial/
-[50]: knetminer-archetype/src/main/resources/archetype-resources/.travis.yml
-[60]: https://docs.travis-ci.com/user/environment-variables/#defining-variables-in-repository-settings
+Finally, note that we try to keep our CI scripts as independent as possible from the particular CI framework that
+is being used.
+ 
+[30]: https://docs.github.com/en/free-pro-team@latest/actions/quickstart
+[50]: knetminer-archetype/src/main/resources/archetype-resources/.github/workflows/deploy.yml
+[60]: https://docs.github.com/en/free-pro-team@latest/actions/reference/encrypted-secrets
 
 
 ## Archetype for new projects
 
-All of the above (link to common POM, Travis settings) is easy to setup when you're creating a new Maven project, thanks
-to our [Maven Archetype Project](knetminer-archetype). In case you don't know them, [Maven archetypes][70] are templates
-to make Maven projects. In our case, you can quickly create a new project with a POM that contains the elements described
-above (inheritance from the common POM, basic Travis file) and more (eg, common files like `.gitignore`, see 
-the next section).  
+All of the above (link to common POM, GH Actions settings) is easy to setup when you're creating a new Maven project, 
+thanks to our [Maven Archetype Project](knetminer-archetype). In case you don't know them, [Maven archetypes][70] are 
+templates to make Maven projects. In our case, you can quickly create a new project with a POM that contains the 
+elements described above (inheritance from the common POM, basic GH Actions file) and more (eg, common files 
+like `.gitignore`, see the next section).  
 
-Details on how to use the archetype are available in its [README][80].
+Details on how to use Maven archetypes are available in its [README][80].
 
 [70]: https://maven.apache.org/archetype/maven-archetype-plugin/index.html
 [80]: knetminer-archetype/README.md
