@@ -82,7 +82,7 @@ if [[ ! -z "$needs_push" ]]; then
 	echo -e "\n\n\tPushing changes to github\n"
 	
 	# It seems that Travis auto-pushes tags
-	# TODO: Requires testing, maybe it messes up with the assigned release tag
+	# TODO: Still neded? Requires testing, maybe it messes up with the assigned release tag
   git push --force --tags origin HEAD:"$GIT_BRANCH"
 fi
 
