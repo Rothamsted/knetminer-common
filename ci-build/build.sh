@@ -77,7 +77,7 @@ fi
 # TODO: document the handlers.
 [[ -e ./ci-build/build-before.sh ]] && . ./ci-build/build-before.sh
 [[ -e ./ci-build/build-body.sh ]] \
-  && . ./ci-build/build-body.sh $MAVEN_GOAL \
+  && . ./ci-build/build-body.sh \
   || mvn $MAVEN_GOAL --settings "ci-build/maven-settings.xml" $MAVEN_ARGS
 [[ -e ./ci-build/build-after.sh ]] && . ./ci-build/build-after.sh
 
