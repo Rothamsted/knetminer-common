@@ -8,5 +8,5 @@ cd `dirname "$0"`
 #
 for file in maven-settings.xml build.sh
 do
-	wget "$CI_DIR_URL/$file" -O "$file"
+	[[ -e "$file" ]] || wget "$CI_DIR_URL/$file" -O "$file"
 done

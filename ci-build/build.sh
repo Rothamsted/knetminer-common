@@ -73,7 +73,12 @@ else
 	maven_goal='install'
 fi
 
-mvn $maven_goal --settings "ci-build/maven-settings.xml" $mvn_opts
+# TODO: document the handlers.
+[[ -e ./ci-build/build-before.sh ]] && ./ci-build/build-before.sh
+[[ -e ./ci-build/build-body.sh ]] \
+  && ./ci-build/build-body.sh $maven_goal \
+  || mvn $maven_goal --settings "ci-build/maven-settings.xml" $mvn_opts
+[[ -e ./ci-build/build-after.sh ]] && ./ci-build/build-after.sh
 
 if [[ "$GIT_BRANCH" != 'master' ]]; then
   echo -e "\n\n\tNot in the main repo, and/or not in the master branch, build ends here. Bye.\n"
