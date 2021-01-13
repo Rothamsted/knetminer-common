@@ -30,11 +30,12 @@ fi
 cd `dirname "$0"`
 cd ..
 
-ci_skip_tag='[ci skip]'
-mvn_opts='--no-transfer-progress --batch-mode'
+# TODO: document these two
+export CI_SKIP_TAG='[ci skip]'
+export MAVEN_ARGS='--no-transfer-progress --batch-mode'
 
-if [[ `git log -1 --pretty=format:"%s"` =~ "$ci_skip_tag" ]]; then
-	echo -e "\n$ci_skip_tag prefix, ignoring this commit\n"
+if [[ `git log -1 --pretty=format:"%s"` =~ "$CI_SKIP_TAG" ]]; then
+	echo -e "\n$CI_SKIP_TAG prefix, ignoring this commit\n"
 	exit
 fi
 
@@ -60,9 +61,9 @@ if [[ ! -z "${NEW_RELEASE_VER}" ]] && [[ ! -z "${NEW_SNAPSHOT_VER}" ]]; then
 fi
   
 if [[ ! -z "$is_release" ]]; then
-  mvn versions:set -DnewVersion="${NEW_RELEASE_VER}" -DallowSnapshots=true $mvn_opts
+  mvn versions:set -DnewVersion="${NEW_RELEASE_VER}" -DallowSnapshots=true $MAVEN_ARGS
   # Commit immediately, even if it fails, we will have a chance to give up
-  mvn versions:commit $mvn_opts
+  mvn versions:commit $MAVEN_ARGS
 fi
 
 if [[ "$GIT_BRANCH" == 'master' ]]; then 
@@ -74,11 +75,11 @@ else
 fi
 
 # TODO: document the handlers.
-[[ -e ./ci-build/build-before.sh ]] && ./ci-build/build-before.sh
+[[ -e ./ci-build/build-before.sh ]] && . ./ci-build/build-before.sh
 [[ -e ./ci-build/build-body.sh ]] \
-  && ./ci-build/build-body.sh $maven_goal \
-  || mvn $maven_goal --settings "ci-build/maven-settings.xml" $mvn_opts
-[[ -e ./ci-build/build-after.sh ]] && ./ci-build/build-after.sh
+  && . ./ci-build/build-body.sh $maven_goal \
+  || mvn $maven_goal --settings "ci-build/maven-settings.xml" $MAVEN_ARGS
+[[ -e ./ci-build/build-after.sh ]] && . ./ci-build/build-after.sh
 
 if [[ "$GIT_BRANCH" != 'master' ]]; then
   echo -e "\n\n\tNot in the main repo, and/or not in the master branch, build ends here. Bye.\n"
@@ -88,7 +89,7 @@ fi
 
 if ! git diff --exit-code --quiet HEAD; then
 	needs_push='true'
-	git commit -a -m "Updating CI auto-generated files. ${ci_skip_tag}"
+	git commit -a -m "Updating CI auto-generated files. ${CI_SKIP_TAG}"
 fi
 
 # Will git need to be updated on remote?
@@ -100,12 +101,12 @@ fi
 if [[ ! -z "$is_release" ]]; then
 	echo -e "\n\n\tCommitting ${NEW_RELEASE_VER} to github\n"
   # TODO: --force was used in Travis, cause it seems to place a tag automatically
-	git tag --force --annotate "${NEW_RELEASE_VER}" -m "Releasing ${NEW_RELEASE_VER}. ${ci_skip_tag}"
+	git tag --force --annotate "${NEW_RELEASE_VER}" -m "Releasing ${NEW_RELEASE_VER}. ${CI_SKIP_TAG}"
 	
 	echo -e "\n\n\tSwitching codebase version to ${NEW_SNAPSHOT_VER}\n"
-	mvn versions:set -DnewVersion="${NEW_SNAPSHOT_VER}" -DallowSnapshots=true $mvn_opts
-	mvn versions:commit $mvn_opts
-	git commit -a -m "Switching version to ${NEW_SNAPSHOT_VER}. ${ci_skip_tag}"
+	mvn versions:set -DnewVersion="${NEW_SNAPSHOT_VER}" -DallowSnapshots=true $MAVEN_ARGS
+	mvn versions:commit $MAVEN_ARGS
+	git commit -a -m "Switching version to ${NEW_SNAPSHOT_VER}. ${CI_SKIP_TAG}"
 fi
 
 # Do we need to git-push?
