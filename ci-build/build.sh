@@ -9,7 +9,7 @@ if [[ "$CI_TRIGGERING_EVENT" == 'schedule' ]]; then
 	nchanges=1
 	[[ -z "$CI_SCHEDULE_PERIOD" ]] \
 	  && echo -e "\n\nWARNING: No CI_SCHEDULE_PERIOD defined, I'll build unconditionally as per schedule\n" \
-	  || nchanges=$(git log --since '$CI_SCHEDULE_PERIOD hours ago' --format=oneline | wc -l)
+	  || nchanges=$(git log --since "$CI_SCHEDULE_PERIOD hours ago" --format=oneline | wc -l)
 
 	if [[ $(($nchanges)) == 0  ]]; then
 		cat <<EOT
