@@ -170,8 +170,10 @@ does the very minimal, that is:
 
 	1. Defines common stuff like the Java version to use for the build
   1. Downloads common files and scripts we use to build
-  1. Runs the downloaded `ci-build/build.sh`
+  1. Runs the downloaded `[ci-build/build.sh][170]`
   1. Keeps Maven files into a cache, to ensure performance (and contribute to the environment...)
+
+[170]: ci-build/build.sh
 
 This assumes that you define authentication values, via [GitHub Actions secrets][60].
 
@@ -184,7 +186,14 @@ Again, you'll need to define your github credentials, in order to push new tags.
 
 This version is designed to completely automate the download of our build files into your local
 project copy, every time you build (from GH Actions). You might need some customisation, by working
-with copies of the files above.  
+with copies of the files above.
+
+Another function that `build.sh` has is to check if the build was triggered by a [periodically scheduled workflow][65]
+or not. If that's the case, the script proceeds with an actual build only if there have been github commits since
+the last build.  
+
+TODO: it's not clear if this already managed by GH Actions or not. We'll keep it anyway, cause we want the script
+to be CI-independent.
 
 Finally, note that we try to keep our CI scripts as independent as possible from the particular CI framework that
 is being used.
@@ -192,7 +201,23 @@ is being used.
 [30]: https://docs.github.com/en/free-pro-team@latest/actions/quickstart
 [50]: knetminer-archetype/src/main/resources/archetype-resources/.github/workflows/deploy.yml
 [60]: https://docs.github.com/en/free-pro-team@latest/actions/reference/encrypted-secrets
+[65]: https://jasonet.co/posts/scheduled-actions/
 
+### Reusing build files and customising the build
+
+If you need a particularly build script, you don't necessarily need to rewrite it from scratch. The provided `build.sh`
+is a scaffold for common actions (checking scheduled builds, releasing, checking if the build created git commits
+to be pushed upwards) and the Maven-bases build is framed within such scaffold. When the times come to actually
+issue a `mvn deploy` or `mvn install` command, the script behaves like this:
+
+* if the handler `build-before.sh` exists, it first runs it (using [bash sourcing][200], ie, the handler can set 
+variables for its parent of for the following handlers).
+* if `build-body.sh` exists, it runs it (again, sourcing), else runs a default `mvn <deploy|install>` command
+* same as above for `build-after.sh`
+ 
+See [the script][170] for details.
+
+[200]: https://linuxize.com/post/bash-source-command 
 
 ## Archetype for new projects
 
