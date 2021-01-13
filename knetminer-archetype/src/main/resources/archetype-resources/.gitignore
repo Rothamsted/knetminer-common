@@ -8,4 +8,7 @@ target/
 .project
 .settings
 .DS_Store
-/travis/
+# These are auto-downloaded by the CI
+/ci-build/build.sh
+/ci-build/install.sh
+/ci-build/maven-settings.xml

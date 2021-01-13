@@ -20,7 +20,9 @@ if [[ "$CI_TRIGGERING_EVENT" == 'schedule' ]]; then
 	if I didn't get it right.
 	
 EOT
-	exit
+	  exit
+  else
+  	echo "Proceeding with periodic build"
 	fi
 fi
 
