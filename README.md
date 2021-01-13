@@ -192,9 +192,6 @@ Another function that `build.sh` has is to check if the build was triggered by a
 or not. If that's the case, the script proceeds with an actual build only if there have been github commits since
 the last build.  
 
-TODO: it's not clear if this already managed by GH Actions or not. We'll keep it anyway, cause we want the script
-to be CI-independent.
-
 Finally, note that we try to keep our CI scripts as independent as possible from the particular CI framework that
 is being used.
  
