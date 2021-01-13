@@ -68,17 +68,17 @@ fi
 
 if [[ "$GIT_BRANCH" == 'master' ]]; then 
 	echo -e "\n\n\tMaven Deployment\n"
-	maven_goal='deploy'
+	export MAVEN_GOAL='deploy'
 else
 	echo -e "\n\n\tNot in the main repo, and/or not in the master branch, building only, without deployment\n"
-	maven_goal='install'
+	export MAVEN_GOAL='install'
 fi
 
 # TODO: document the handlers.
 [[ -e ./ci-build/build-before.sh ]] && . ./ci-build/build-before.sh
 [[ -e ./ci-build/build-body.sh ]] \
-  && . ./ci-build/build-body.sh $maven_goal \
-  || mvn $maven_goal --settings "ci-build/maven-settings.xml" $MAVEN_ARGS
+  && . ./ci-build/build-body.sh $MAVEN_GOAL \
+  || mvn $MAVEN_GOAL --settings "ci-build/maven-settings.xml" $MAVEN_ARGS
 [[ -e ./ci-build/build-after.sh ]] && . ./ci-build/build-after.sh
 
 if [[ "$GIT_BRANCH" != 'master' ]]; then
