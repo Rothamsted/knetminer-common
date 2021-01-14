@@ -51,16 +51,17 @@ export GIT_BRANCH=`git branch --show-current`
 
 # Manage releasing too, when these vars are defined
 #
+export IS_RELEASE=false
 if [[ ! -z "${NEW_RELEASE_VER}" ]] && [[ ! -z "${NEW_SNAPSHOT_VER}" ]]; then
 	if [[ "$GIT_BRANCH" != 'master' ]]; then
 		echo -e "\n\nERROR: use releasing parameters with the main repo and the master branch only!\n"
 		exit 1
 	fi 
   echo -e "\n\n\tRELEASING ${NEW_RELEASE_VER}, new snapshot will be: ${NEW_SNAPSHOT_VER}\n" 
-  is_release='true'
+  export IS_RELEASE=true
 fi
   
-if [[ ! -z "$is_release" ]]; then
+if $IS_RELEASE; then
   mvn versions:set -DnewVersion="${NEW_RELEASE_VER}" -DallowSnapshots=true $MAVEN_ARGS
   # Commit immediately, even if it fails, we will have a chance to give up
   mvn versions:commit $MAVEN_ARGS
@@ -86,19 +87,19 @@ if [[ "$GIT_BRANCH" != 'master' ]]; then
 	exit
 fi
 
-
+needs_push=false
 if ! git diff --exit-code --quiet HEAD; then
-	needs_push='true'
+	needs_push=true
 	git commit -a -m "Updating CI auto-generated files. ${CI_SKIP_TAG}"
 fi
 
 # Will git need to be updated on remote?
-[[ ! -z "$is_release" || ! -z "$needs_push" ]] && needs_push='true'
+$IS_RELEASE || $needs_push && needs_push=true
 
 
 # And now manage the release too
 #
-if [[ ! -z "$is_release" ]]; then
+if $IS_RELEASE; then
 	echo -e "\n\n\tCommitting ${NEW_RELEASE_VER} to github\n"
   # TODO: --force was used in Travis, cause it seems to place a tag automatically
 	git tag --force --annotate "${NEW_RELEASE_VER}" -m "Releasing ${NEW_RELEASE_VER}. ${CI_SKIP_TAG}"
@@ -111,7 +112,7 @@ fi
 
 # Do we need to git-push?
 #
-if [[ ! -z "$needs_push" ]]; then
+if $needs_push; then
 	echo -e "\n\n\tPushing changes to github\n"
 	
 	# It seems that Travis auto-pushes tags
