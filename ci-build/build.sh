@@ -79,22 +79,13 @@ fi
 [[ -e ./ci-build/build-before.sh ]] && . ./ci-build/build-before.sh
 [[ -e ./ci-build/build-body.sh ]] \
   && . ./ci-build/build-body.sh \
-  || mvn $MAVEN_GOAL --settings "ci-build/maven-settings.xml" $MAVEN_ARGS
+  || mvn $MAVEN_GOAL --settings ci-build/maven-settings.xml $MAVEN_ARGS
 [[ -e ./ci-build/build-after.sh ]] && . ./ci-build/build-after.sh
 
 if [[ "$GIT_BRANCH" != 'master' ]]; then
   echo -e "\n\n\tNot in the main repo, and/or not in the master branch, build ends here. Bye.\n"
 	exit
 fi
-
-needs_push=false
-if ! git diff --exit-code --quiet HEAD; then
-	needs_push=true
-	git commit -a -m "Updating CI auto-generated files. ${CI_SKIP_TAG}"
-fi
-
-# Will git need to be updated on remote?
-$IS_RELEASE || $needs_push && needs_push=true
 
 
 # And now manage the release too
@@ -110,8 +101,15 @@ if $IS_RELEASE; then
 	git commit -a -m "Switching version to ${NEW_SNAPSHOT_VER}. ${CI_SKIP_TAG}"
 fi
 
+
 # Do we need to git-push?
 #
+needs_push=false
+if ! git diff --exit-code --quiet HEAD; then
+	needs_push=true
+	git commit -a -m "Updating CI auto-generated files. ${CI_SKIP_TAG}"
+fi
+
 if $needs_push; then
 	echo -e "\n\n\tPushing changes to github\n"
 	
