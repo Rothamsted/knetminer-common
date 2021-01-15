@@ -58,11 +58,9 @@ if [[ ! -z "${NEW_RELEASE_VER}" ]] && [[ ! -z "${NEW_SNAPSHOT_VER}" ]]; then
 		echo -e "\n\nERROR: use releasing parameters with the main repo and the master branch only!\n"
 		exit 1
 	fi 
-  echo -e "\n\n\tRELEASING ${NEW_RELEASE_VER}, new snapshot will be: ${NEW_SNAPSHOT_VER}\n" 
+  echo -e "\n\n\tReleasing ${NEW_RELEASE_VER}, new snapshot will be: ${NEW_SNAPSHOT_VER}\n" 
   export IS_RELEASE=true
-fi
-  
-if $IS_RELEASE; then
+
   mvn versions:set -DnewVersion="${NEW_RELEASE_VER}" -DallowSnapshots=true $MAVEN_ARGS
   # Commit immediately, even if it fails, we will have a chance to give up
   mvn versions:commit $MAVEN_ARGS
@@ -93,12 +91,15 @@ fi
 #
 if $IS_RELEASE; then
 	echo -e "\n\n\tCommitting ${NEW_RELEASE_VER} to github\n"
+	git commit -a -m "Releasing ${NEW_RELEASE_VER}. ${CI_SKIP_TAG}"
+	
   # TODO: --force was used in Travis, cause it seems to place a tag automatically
 	git tag --force --annotate "${NEW_RELEASE_VER}" -m "Releasing ${NEW_RELEASE_VER}. ${CI_SKIP_TAG}"
 	
 	echo -e "\n\n\tSwitching codebase version to ${NEW_SNAPSHOT_VER}\n"
 	mvn versions:set -DnewVersion="${NEW_SNAPSHOT_VER}" -DallowSnapshots=true $MAVEN_ARGS
 	mvn versions:commit $MAVEN_ARGS
+	
 	git commit -a -m "Switching version to ${NEW_SNAPSHOT_VER}. ${CI_SKIP_TAG}"
 	NEEDS_PUSH=true
 fi
