@@ -43,7 +43,8 @@ fi
 # These need to be configured by the CI
 git config --global user.name "$GIT_USER"
 git config --global user.email "$GIT_USER_EMAIL"
-git config --global "url.https://$GIT_USER:$GIT_PASSWORD@github.com.insteadof" "https://github.com"	
+git config --global "url.https://$GIT_USER:$GIT_PASSWORD@github.com.insteadof" "https://github.com"
+export NEEDS_PUSH=false # TODO: document variables
 
 # PRs are checked out in detach mode, so they haven't any branch, so checking if this is != master
 # filters them away too
@@ -99,23 +100,21 @@ if $IS_RELEASE; then
 	mvn versions:set -DnewVersion="${NEW_SNAPSHOT_VER}" -DallowSnapshots=true $MAVEN_ARGS
 	mvn versions:commit $MAVEN_ARGS
 	git commit -a -m "Switching version to ${NEW_SNAPSHOT_VER}. ${CI_SKIP_TAG}"
+	NEEDS_PUSH=true
 fi
 
 
-# Do we need to git-push?
-#
-needs_push=false
-if ! git diff --exit-code --quiet HEAD; then
-	needs_push=true
-	git commit -a -m "Updating CI auto-generated files. ${CI_SKIP_TAG}"
-fi
-
-if $needs_push; then
+if $NEEDS_PUSH; then
 	echo -e "\n\n\tPushing changes to github\n"
+
+	git commit -a -m "Updating CI auto-generated files. ${CI_SKIP_TAG}"
 	
 	# It seems that Travis auto-pushes tags
 	# TODO: Still neded? Requires testing, maybe it messes up with the assigned release tag
   git push --force --tags origin HEAD:"$GIT_BRANCH"
 fi
+
+# TODO: review documentation about handlers
+[[ -e ./ci-build/build-after-push.sh ]] && . ./ci-build/build-after-push.sh
 
 echo -e "\n\nThe End.\n"
