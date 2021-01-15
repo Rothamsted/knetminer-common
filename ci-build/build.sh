@@ -106,8 +106,6 @@ fi
 
 if $NEEDS_PUSH; then
 	echo -e "\n\n\tPushing changes to github\n"
-
-	git commit -a -m "Updating CI auto-generated files. ${CI_SKIP_TAG}"
 	
 	# It seems that Travis auto-pushes tags
 	# TODO: Still neded? Requires testing, maybe it messes up with the assigned release tag
