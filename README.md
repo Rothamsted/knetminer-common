@@ -196,7 +196,7 @@ Finally, note that we try to keep our CI scripts as independent as possible from
 is being used.
  
 [30]: https://docs.github.com/en/free-pro-team@latest/actions/quickstart
-[50]: knetminer-archetype/src/main/resources/archetype-resources/.github/workflows/deploy.yml
+[50]: knetminer-archetype/src/main/resources/archetype-resources/.github/workflows/build.yml
 [60]: https://docs.github.com/en/free-pro-team@latest/actions/reference/encrypted-secrets
 [65]: https://jasonet.co/posts/scheduled-actions/
 
