@@ -113,6 +113,6 @@ if $NEEDS_PUSH; then
 fi
 
 # TODO: review documentation about handlers
-[[ -e ./ci-build/build-after-push.sh ]] && . ./ci-build/build-after-push.sh
+[[ -e ./ci-build/build-end.sh ]] && . ./ci-build/build-end.sh
 
 echo -e "\n\nThe End.\n"
