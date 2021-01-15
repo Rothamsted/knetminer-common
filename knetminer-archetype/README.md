@@ -27,8 +27,8 @@ The new project is a simple jar project. The common elements it contains include
   project on our artifactory
   * A convenience [.gitignore file][40]
 
-**WARNING**: The default `.gitignore` files ignores `travis/*`, since our scripts download this from our repo and,
-by default, it is not meant to be duplicated in derived projects.  
+**WARNING**: The default `.gitignore` files ignores files in `ci-build/*`, since our scripts download them from our 
+repo and, by default, those files aren't meant to be duplicated in derived projects.  
   
 
 **To Windows users**: while we haven't tried it yet, we're confident that you can reproduce what the command above does

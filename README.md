@@ -209,12 +209,24 @@ issue a `mvn deploy` or `mvn install` command, the script behaves like this:
 
 * if the handler `build-before.sh` exists, it first runs it (using [bash sourcing][200], ie, the handler can set 
 variables for its parent of for the following handlers).
-* if `build-body.sh` exists, it runs it (again, sourcing), else runs a default `mvn <deploy|install>` command
+* if `build-body.sh` exists, it runs it (again, sourcing), else runs a default `mvn <deploy|install>` command.
+  * If you're managing a release build, these scripts are called with the Maven project set to the release 
+    version that you passed via the `NEW_RELEASE_VER` parameter. 
 * same as above for `build-after.sh`
+* After the build, the main `build.sh` scripts does two other operations:
+  * if needed, it finalises the releasing
+    process, ie, commits/pushes the new version to github, including adding a proper version tag, move the Maven project's
+    version to the next snapshot version (using the `NEW_SNAPSHOT_VER` parameter).  
+  * If the `NEEDS_PUSH` variable is set to 'true', pushes CI-commited changes to the git's cloned codebase.
+* The last step, after build, releasing and github updates, the script `build-end.sh` is invoked if it exists (once more,
+  via Bash sourcing). So, this is to do very final operations, like notifying other systems (eg, for internal deployment).
  
-See [the script][170] for details.
+See [the script][170] for details. Examples of such customisation are available for [Ondex][202] and [Knetminer][204].  
 
-[200]: https://linuxize.com/post/bash-source-command 
+[200]: https://linuxize.com/post/bash-source-command
+[202]: https://github.com/Rothamsted/knetbuilder/tree/master/ci-build
+[204]: https://github.com/Rothamsted/knetminer/tree/master/ci-build
+
 
 ## Archetype for new projects
 
