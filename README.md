@@ -168,14 +168,14 @@ You don't need to deploy from you working PC, manually. We use CI systems nowada
 our current one is [GitHub Actions][30]. You can reuse our [common GH Actions file][50]. As you can see, this
 does the very minimal, that is: 
 
-	1. Defines common stuff like the Java version to use for the build
-  1. Downloads common files and scripts we use to build
+  1. Defines common stuff like the Java version to use for the build
+  1. Downloads common files and scripts we use to build (from this hereby repository)
   1. Runs the downloaded `[ci-build/build.sh][170]`
   1. Keeps Maven files into a cache, to ensure performance (and contribute to the environment...)
 
 [170]: ci-build/build.sh
 
-This assumes that you define authentication values, via [GitHub Actions secrets][60].
+This assumes that you define a number of authentication values, via [GitHub Actions secrets][60].
 
 The `build.sh` script is designed to manage releases as well. You can run a build manually, from the GH Actions 
 control panel. From there, set proper variables there about the new release version you want and the next Maven 
@@ -185,15 +185,15 @@ the next snapshot, commit everything on GitHub.
 Again, you'll need to define your github credentials, in order to push new tags.
 
 This version is designed to completely automate the download of our build files into your local
-project copy, every time you build (from GH Actions). You might need some customisation, by working
-with copies of the files above.
+project copy, every time you build (from GH Actions). You might need some customisation, by either working
+with a copy of the build file above, or by leveraging build script handlers (see next paragraph).  
 
-Another function that `build.sh` has is to check if the build was triggered by a [periodically scheduled workflow][65]
+Another function that `build.sh` has is checking if the build was triggered by a [periodically scheduled workflow][65]
 or not. If that's the case, the script proceeds with an actual build only if there have been github commits since
-the last build.  
+the last build.    
 
 Finally, note that we try to keep our CI scripts as independent as possible from the particular CI framework that
-is being used.
+is being used.  
  
 [30]: https://docs.github.com/en/free-pro-team@latest/actions/quickstart
 [50]: knetminer-archetype/src/main/resources/archetype-resources/.github/workflows/build.yml
@@ -202,26 +202,33 @@ is being used.
 
 ### Reusing build files and customising the build
 
-If you need a particularly build script, you don't necessarily need to rewrite it from scratch. The provided `build.sh`
-is a scaffold for common actions (checking scheduled builds, releasing, checking if the build created git commits
-to be pushed upwards) and the Maven-bases build is framed within such scaffold. When the times come to actually
-issue a `mvn deploy` or `mvn install` command, the script behaves like this:
+If you need a particular building flow, which different from our default only on a couple of details, you don't 
+necessarily need to rewrite the logics of `build.sh` from scratch, or worse, duplicate and tweak it. 
+In fact, such `build.sh` script is a scaffold for common actions and a Maven-based build is framed within such scaffold.   
 
-* if the handler `build-before.sh` exists, it first runs it (using [bash sourcing][200], ie, the handler can set 
-variables for its parent of for the following handlers).
-* if `build-body.sh` exists, it runs it (again, sourcing), else runs a default `mvn <deploy|install>` command.
-  * If you're managing a release build, these scripts are called with the Maven project set to the release 
+This is obtained by checking if certain script handlers are present in the `ci-build` folder of your code base. Briefly,
+this is the workflow of `build.sh`
+
+* Check if we actually need a build at all (eg, if we are in a periodic build and there aren't recent git commits, or 
+  the last commit has the '[ci skip]' tag in its message).
+* Do some preparations and set variables like `GIT_BRANCH` or `IS_RELEASE`. This includes setting the Maven project to
+  the version `NEW_RELEASE_VER`, if this is passed in as parameter.
+* if the handler **`build-before.sh`** exists, it's run (using [bash sourcing][200], ie, the handler can set 
+  variables for its parent of for the following handlers).
+* if **`build-body.sh`** exists, it runs it (again, via sourcing), else runs a default `mvn <deploy|install>` command.
+  * As mentioned above, if you're managing a release build, these scripts are called with the Maven project set to the release 
     version that you passed via the `NEW_RELEASE_VER` parameter. 
-* same as above for `build-after.sh`
-* After the build, the main `build.sh` scripts does two other operations:
-  * if needed, it finalises the releasing
-    process, ie, commits/pushes the new version to github, including adding a proper version tag, move the Maven project's
-    version to the next snapshot version (using the `NEW_SNAPSHOT_VER` parameter).  
-  * If the `NEEDS_PUSH` variable is set to 'true', pushes CI-commited changes to the git's cloned codebase.
-* The last step, after build, releasing and github updates, the script `build-end.sh` is invoked if it exists (once more,
-  via Bash sourcing). So, this is to do very final operations, like notifying other systems (eg, for internal deployment).
+* same as above for **`build-after.sh`**.
+* After the main build, if needed, `build.sh` finalises the releasing process, ie, commits/pushes the new version 
+  to github, including adding a proper version tag, move the Maven project's version to the next snapshot version 
+  (using the `NEW_SNAPSHOT_VER` parameter).  
+* If the `NEEDS_PUSH` variable is set to 'true', pushes CI-commited changes to the git's cloned codebase.
+* As a last step, after build, releasing and github updates, the script **`build-end.sh`** is invoked if it exists 
+  (once more, via Bash sourcing). So, this is to do very final operations, like notifying other systems (eg, for 
+  internal deployment).
  
-See [the script][170] for details. Examples of such customisation are available for [Ondex][202] and [Knetminer][204].  
+See [the `build.sh` script][170] for details. Examples of such customisations are available for [Ondex][202] 
+and [Knetminer][204].  
 
 [200]: https://linuxize.com/post/bash-source-command
 [202]: https://github.com/Rothamsted/knetbuilder/tree/master/ci-build
