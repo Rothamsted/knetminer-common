@@ -8,5 +8,3 @@ target/
 .project
 .settings
 .DS_Store
-# Created by GH Actions
-/settings.xml 

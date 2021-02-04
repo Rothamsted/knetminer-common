@@ -39,6 +39,9 @@ if [[ `git log -1 --pretty=format:"%s"` =~ "$CI_SKIP_TAG" ]]; then
 	exit
 fi
 
+# TODO: review documentation about handlers
+[[ -e ./ci-build/build-begin.sh ]] && . ./ci-build/build-begin.sh
+
 
 # These need to be configured by the CI
 git config --global user.name "$GIT_USER"
@@ -74,7 +77,6 @@ else
 	export MAVEN_GOAL='install'
 fi
 
-# TODO: document the handlers.
 [[ -e ./ci-build/build-before.sh ]] && . ./ci-build/build-before.sh
 [[ -e ./ci-build/build-body.sh ]] \
   && . ./ci-build/build-body.sh \
@@ -113,7 +115,6 @@ if $NEEDS_PUSH; then
   git push --force --tags origin HEAD:"$GIT_BRANCH"
 fi
 
-# TODO: review documentation about handlers
 [[ -e ./ci-build/build-end.sh ]] && . ./ci-build/build-end.sh
 
 echo -e "\n\nThe End.\n"
