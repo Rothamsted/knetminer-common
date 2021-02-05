@@ -39,14 +39,6 @@ if [[ `git log -1 --pretty=format:"%s"` =~ "$CI_SKIP_TAG" ]]; then
 	exit
 fi
 
-# TODO: review documentation about handlers
-[[ -e ./ci-build/build-begin.sh ]] && . ./ci-build/build-begin.sh
-
-
-# These need to be configured by the CI
-git config --global user.name "$GIT_USER"
-git config --global user.email "$GIT_USER_EMAIL"
-git config --global "url.https://$GIT_USER:$GIT_PASSWORD@github.com.insteadof" "https://github.com"
 export NEEDS_PUSH=false # TODO: document variables
 
 # PRs are checked out in detach mode, so they haven't any branch, so checking if this is != master
@@ -63,7 +55,19 @@ if [[ ! -z "${NEW_RELEASE_VER}" ]] && [[ ! -z "${NEW_SNAPSHOT_VER}" ]]; then
 	fi 
   echo -e "\n\n\tReleasing ${NEW_RELEASE_VER}, new snapshot will be: ${NEW_SNAPSHOT_VER}\n" 
   export IS_RELEASE=true
+fi
 
+
+# TODO: review documentation about handlers
+[[ -e ./ci-build/build-begin.sh ]] && . ./ci-build/build-begin.sh
+
+
+# These need to be configured by the CI
+git config --global user.name "$GIT_USER"
+git config --global user.email "$GIT_USER_EMAIL"
+git config --global "url.https://$GIT_USER:$GIT_PASSWORD@github.com.insteadof" "https://github.com"
+
+if $IS_RELEASE; then
   mvn versions:set -DnewVersion="${NEW_RELEASE_VER}" -DallowSnapshots=true $MAVEN_ARGS
   # Commit immediately, even if it fails, we will have a chance to give up
   mvn versions:commit $MAVEN_ARGS
