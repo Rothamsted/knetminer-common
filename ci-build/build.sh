@@ -29,6 +29,8 @@ fi
 
 cd `dirname "$0"`
 cd ..
+export MYDIR="`pwd`"
+
 
 # TODO: document these two
 export CI_SKIP_TAG='[ci skip]'
