@@ -17,7 +17,19 @@
 		
 		<jutils.version>10.0-SNAPSHOT</jutils.version>
 		<springframework.version>5.3.1</springframework.version>
-		
+
+
+		<!-- 
+			These are for the neo4j server plug-in. 
+			We define them via variables, cause sometimes it's useful to override them.
+			We also use non-standard ports in order to avoid clashes with running instances. 
+		-->
+		<neo4j.server.version>4.2.4</neo4j.server.version>
+		<neo4j.server.boltPort>17690</neo4j.server.boltPort>
+		<neo4j.server.httpPort>17490</neo4j.server.httpPort>
+		<neo4j.server.deleteDb>false</neo4j.server.deleteDb>
+		<neo4j.server.password>test</neo4j.server.password>
+		<neo4j.server.serverReadyAttempts>120</neo4j.server.serverReadyAttempts>
 		
 		<!-- These are defined as properties, so that you can reuse/override them, eg, in a profile -->
 		<knetminer.mvnrepo.rel.id>knetminer-releases</knetminer.mvnrepo.rel.id>
@@ -144,6 +156,12 @@
 				<version>${springframework.version}</version>
 			</dependency>
 			
+      <dependency>
+        <groupId>org.neo4j.driver</groupId>
+        <artifactId>neo4j-java-driver</artifactId>
+        <version>4.2.3</version>
+      </dependency>			
+			
 			<!-- Needed in Java >= 11 -->	  
 			<dependency>
 				<groupId>javax.annotation</groupId>
@@ -184,6 +202,82 @@
 						</lifecycleMappingMetadata>
 					</configuration>
 				</plugin>
+				
+			  <!-- 
+					A small plug-in that starts/stops Neo4j in a Maven build lifecycle. 
+					
+					1.0.1 is the official version that integrated our improvements at
+					at https://github.com/Rothamsted/neo4j-server-maven-plugin 
+			  -->
+	      <plugin>
+			    <groupId>com.github.harti2006</groupId>
+				  <artifactId>neo4j-server-maven-plugin</artifactId>
+				  <version>2.0-SNAPSHOT</version>
+					<configuration>
+						<version>${neo4j.server.version}</version>
+						<port>${neo4j.server.httpPort}</port>
+						<boltPort>${neo4j.server.boltPort}</boltPort>
+						<deleteDb>${neo4j.server.deleteDb}</deleteDb>
+						<serverReadyAttempts>${neo4j.server.serverReadyAttempts}</serverReadyAttempts>
+						<password>${neo4j.server.password}</password>
+					</configuration>
+					<executions>
+						<execution>
+							<id>start-neo4j-server</id>
+							<goals><goal>start</goal></goals>
+						</execution>
+						<execution>
+							<id>stop-neo4j-server</id>
+							<goals><goal>stop</goal></goals>
+						</execution>
+					</executions>		        
+	      </plugin>
+	      
+				<plugin>
+					<groupId>org.apache.maven.plugins</groupId>
+					<artifactId>maven-failsafe-plugin</artifactId>
+					<!-- 
+						This happens in M5: https://issues.apache.org/jira/browse/SUREFIRE-1809
+						They've a workaround, but it's quicker to wait for M6 
+					-->
+					<version>3.0.0-M4</version>
+					<configuration>
+						<trimStackTrace>false</trimStackTrace>
+					</configuration>
+					<executions>
+						<execution>
+							<phase>integration-test</phase>
+							<goals><goal>integration-test</goal></goals>
+						</execution>
+				    <execution>
+			        <id>verify</id>
+			        <phase>verify</phase>
+			        <goals><goal>verify</goal></goals>
+				    </execution>
+					</executions>
+				</plugin>	
+				
+			  <plugin>
+			    <groupId>org.apache.maven.plugins</groupId>
+			    <artifactId>maven-surefire-plugin</artifactId>
+			    <configuration>
+			      <properties>
+			        <property>
+			        	<!-- Prints out spaces and test name before/after every test method and automatically -->
+			          <name>listener</name>
+			          <value>uk.ac.ebi.utils.test.junit.TestOutputDecorator</value>
+			        </property>
+			       </properties>
+			    </configuration>
+			    <dependencies>
+			    	<dependency>
+						  <groupId>uk.ac.ebi</groupId>
+						  <artifactId>jutils</artifactId>
+					  	<version>10.0-SNAPSHOT</version>
+			    	</dependency>
+			    </dependencies>
+			  </plugin>
+		  				      	        				
 			</plugins>		
 		</pluginManagement>
 	</build>
