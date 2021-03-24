@@ -27,7 +27,7 @@
 		<neo4j.server.version>4.2.4</neo4j.server.version>
 		<neo4j.server.boltPort>17690</neo4j.server.boltPort>
 		<neo4j.server.httpPort>17490</neo4j.server.httpPort>
-		<neo4j.server.deleteDb>false</neo4j.server.deleteDb>
+		<neo4j.server.deleteDb>true</neo4j.server.deleteDb>
 		<neo4j.server.password>test</neo4j.server.password>
 		<neo4j.server.serverReadyAttempts>120</neo4j.server.serverReadyAttempts>
 		
@@ -173,6 +173,7 @@
 			
 	</dependencyManagement>
 	
+		
 	<build>
 		<!-- See the notes above about <dependencyManagement> -->
 		<pluginManagement>
@@ -260,6 +261,7 @@
 			  <plugin>
 			    <groupId>org.apache.maven.plugins</groupId>
 			    <artifactId>maven-surefire-plugin</artifactId>
+			    <version>3.0.0-M5</version>
 			    <configuration>
 			      <properties>
 			        <property>
@@ -277,7 +279,24 @@
 			    	</dependency>
 			    </dependencies>
 			  </plugin>
-		  				      	        				
+		  				
+				<plugin>
+					<artifactId>maven-assembly-plugin</artifactId>
+					<version>3.3.0</version>
+					<configuration>
+						<archiverConfig>
+							<fileMode>0755</fileMode>
+							<directoryMode>0755</directoryMode>
+							<defaultDirectoryMode>0755</defaultDirectoryMode>
+						</archiverConfig>
+					</configuration>
+				</plugin>
+				
+	  		<plugin>
+	  			<artifactId>maven-dependency-plugin</artifactId>
+	  			<version>3.1.2</version>
+				</plugin>
+								  				      	        				
 			</plugins>		
 		</pluginManagement>
 	</build>
