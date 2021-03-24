@@ -14,7 +14,7 @@
 		<maven.compiler.target>${maven.compiler.source}</maven.compiler.target>
 		<java.version>${maven.compiler.source}</java.version>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-		
+				
 		<jutils.version>10.0-SNAPSHOT</jutils.version>
 		<springframework.version>5.3.1</springframework.version>
 
@@ -29,7 +29,7 @@
 		<neo4j.server.httpPort>17490</neo4j.server.httpPort>
 		<neo4j.server.deleteDb>true</neo4j.server.deleteDb>
 		<neo4j.server.password>test</neo4j.server.password>
-		<neo4j.server.serverReadyAttempts>120</neo4j.server.serverReadyAttempts>
+		<neo4j.server.serverReadyAttempts>60</neo4j.server.serverReadyAttempts>
 		
 		<!-- These are defined as properties, so that you can reuse/override them, eg, in a profile -->
 		<knetminer.mvnrepo.rel.id>knetminer-releases</knetminer.mvnrepo.rel.id>
