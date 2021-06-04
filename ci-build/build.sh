@@ -86,7 +86,7 @@ fi
 [[ -e ./ci-build/build-before.sh ]] && . ./ci-build/build-before.sh
 [[ -e ./ci-build/build-body.sh ]] \
   && . ./ci-build/build-body.sh \
-  || mvn $MAVEN_GOAL --settings ci-build/maven-settings.xml $MAVEN_ARGS
+  || echo __TEST__ mvn $MAVEN_GOAL --settings ci-build/maven-settings.xml $MAVEN_ARGS 
 [[ -e ./ci-build/build-after.sh ]] && . ./ci-build/build-after.sh
 
 if [[ "$GIT_BRANCH" != 'master' ]]; then
