@@ -160,7 +160,7 @@
       <dependency>
         <groupId>org.neo4j.driver</groupId>
         <artifactId>neo4j-java-driver</artifactId>
-        <version>4.2.3</version>
+        <version>4.3.2</version>
       </dependency>			
 			
 			<!-- Needed in Java >= 11 -->	  
@@ -294,13 +294,24 @@
 			        <goals><goal>verify</goal></goals>
 				    </execution>
 					</executions>
+			    <dependencies>
+			    	<dependency>
+						  <groupId>uk.ac.ebi</groupId>
+						  <artifactId>jutils</artifactId>
+							<version>${jutils.version}</version>
+			    	</dependency>
+			    </dependencies>
 				</plugin>	
 				
 			  <plugin>
 			    <groupId>org.apache.maven.plugins</groupId>
 			    <artifactId>maven-surefire-plugin</artifactId>
 			    <!-- TODO: the jutils dependency doesn't work with ver >2.19.1,
-			         I've reported it: https://issues.apache.org/jira/browse/SUREFIRE-1917 -->
+			         I've reported it: https://issues.apache.org/jira/browse/SUREFIRE-1917 
+			    		
+			    		 A workaround to using latest versions is to 
+			    		 include jutils as a dependency in your project
+			    -->
 			    <version>3.0.0-M5</version>
 
 			    <configuration>
