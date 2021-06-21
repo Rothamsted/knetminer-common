@@ -34,11 +34,11 @@
 		<!-- These are defined as properties, so that you can reuse/override them, eg, in a profile -->
 		<knetminer.mvnrepo.rel.id>knetminer-releases</knetminer.mvnrepo.rel.id>
 		<knetminer.mvnrepo.rel.name>Internal Releases</knetminer.mvnrepo.rel.name>
-		<knetminer.mvnrepo.rel.url>https://knetminer.org/artifactory/repository/maven-releases</knetminer.mvnrepo.rel.url>
+		<knetminer.mvnrepo.rel.url>https://knetminer.com/artifactory/repository/maven-releases</knetminer.mvnrepo.rel.url>
 		
 		<knetminer.mvnrepo.snapshots.id>knetminer-snapshots</knetminer.mvnrepo.snapshots.id>
 		<knetminer.mvnrepo.snapshots.name>Internal Snapshots</knetminer.mvnrepo.snapshots.name>
-		<knetminer.mvnrepo.snapshots.url>https://knetminer.org/artifactory/repository/maven-snapshots</knetminer.mvnrepo.snapshots.url>
+		<knetminer.mvnrepo.snapshots.url>https://knetminer.com/artifactory/repository/maven-snapshots</knetminer.mvnrepo.snapshots.url>
 			
 	</properties>  
 
