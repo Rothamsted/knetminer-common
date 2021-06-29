@@ -1,5 +1,14 @@
 set -e
 
+# TODO: email notifications in case of failure
+# Needs this:
+# apt install sendemail
+# sendemail -t $TO $TO... -u $SUBJ -s $SMTP -o tls=yes 
+#   -xu $SMTPUSER -xp $SMTPPWD -f $FROM -m "$MSG"
+# To be put on a trap handler like:
+# trap error_handler ERR
+#  
+
 if [[ "$CI_TRIGGERING_EVENT" == 'schedule' ]]; then
 	
 	# Many cron-based CI triggers don't consider if there have been changes or not, so we rely on 
