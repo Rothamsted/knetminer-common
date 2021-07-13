@@ -322,6 +322,9 @@
 			          <value>uk.ac.ebi.utils.test.junit.TestOutputDecorator</value>
 			        </property>
 			       </properties>
+			       <systemProperties>
+			       	<project.build.directory>${project.build.directory}</project.build.directory>
+			       </systemProperties>
 			    </configuration>
 			    <dependencies>
 			    	<dependency>
