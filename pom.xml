@@ -24,7 +24,7 @@
 			We define them via variables, cause sometimes it's useful to override them.
 			We also use non-standard ports in order to avoid clashes with running instances. 
 		-->
-		<neo4j.server.version>4.3.1</neo4j.server.version>
+		<neo4j.server.version>4.3.2</neo4j.server.version>
 		<neo4j.server.boltPort>17690</neo4j.server.boltPort>
 		<neo4j.server.httpPort>17490</neo4j.server.httpPort>
 		<neo4j.server.deleteDb>true</neo4j.server.deleteDb>
@@ -209,7 +209,8 @@
 		<!-- See the notes above about <dependencyManagement> -->
 		<pluginManagement>
 			<plugins>
-				<!--This plugin's configuration is used to store Eclipse m2e settings only. It has no influence on the Maven build itself. -->
+				<!--This plugin's configuration is used to store Eclipse m2e settings only. It has no influence on the Maven 
+				build itself. -->
 				<plugin>
 					<groupId>org.eclipse.m2e</groupId>
 					<artifactId>lifecycle-mapping</artifactId>
@@ -219,16 +220,24 @@
 							<pluginExecutions>
 								<pluginExecution>
 									<pluginExecutionFilter>
-											<groupId>org.codehaus.mojo</groupId>
-											<artifactId>exec-maven-plugin</artifactId>
+										<groupId>org.codehaus.mojo</groupId>
+										<artifactId>exec-maven-plugin</artifactId>
+										<versionRange>[1.0,)</versionRange>
+										<goals>
+											<goal>exec</goal>
+										</goals>
+										</pluginExecutionFilter>
+										<pluginExecutionFilter>
+											<groupId>org.apache.maven.plugins</groupId>
+											<artifactId>maven-dependency-plugin</artifactId>
 											<versionRange>[1.0,)</versionRange>
 											<goals>
 												<goal>exec</goal>
 											</goals>
-											</pluginExecutionFilter>
-											<action>
-												<ignore />
-											</action>
+										</pluginExecutionFilter>
+										<action>
+											<ignore />
+										</action>
 								</pluginExecution>
 							</pluginExecutions>
 						</lifecycleMappingMetadata>
