@@ -11,7 +11,7 @@ function notify_failure
 	-m "$CI_FAIL_MESSAGE" \
 	-u "$CI_SUBJECT" \
 	-s "$CI_SMTP_SERVER" -xu "$CI_SMTP_USER" -xp "$CI_SMTP_PASSWORD" \
-	-o tls=yes \
+	-o tls=yes
 }
 
 # TODO: To be completed (including variables above)
