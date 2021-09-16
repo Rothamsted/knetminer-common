@@ -66,6 +66,8 @@ export NEEDS_PUSH=false # TODO: document variables
 # PRs are checked out in detach mode, so they haven't any branch, so checking if this is != master
 # filters them away too
 export GIT_BRANCH=`git branch --show-current`
+export DEPLOY_BRANCH=master # TODO: or a list?
+
 
 # Manage releasing too, when these vars are defined
 #
@@ -95,7 +97,7 @@ if $IS_RELEASE; then
   mvn versions:commit $MAVEN_ARGS
 fi
 
-if [[ "$GIT_BRANCH" == 'master' ]]; then 
+if [[ "$GIT_BRANCH" == "$DEPLOY_BRANCH" ]]; then 
 	echo -e "\n\n\tMaven Deployment\n"
 	export MAVEN_GOAL='deploy'
 else
@@ -112,7 +114,7 @@ fi
  
 [[ -e ./ci-build/build-after.sh ]] && . ./ci-build/build-after.sh
 
-if [[ "$GIT_BRANCH" != 'master' ]]; then
+if [[ "$GIT_BRANCH" != "$DEPLOY_BRANCH" ]]; then
   echo -e "\n\n\tNot in the main repo, and/or not in the master branch, build ends here. Bye.\n"
 	exit
 fi
