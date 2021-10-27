@@ -52,16 +52,9 @@ cd ..
 export MYDIR="`pwd`"
 
 
-# TODO: document these two
+# TODO: document the vars
 export CI_SKIP_TAG='[ci skip]'
 export MAVEN_ARGS='--no-transfer-progress --batch-mode'
-
-if [[ `git log -1 --pretty=format:"%s"` =~ "$CI_SKIP_TAG" ]]; then
-	echo -e "\n$CI_SKIP_TAG prefix, ignoring this commit\n"
-	exit
-fi
-
-export NEEDS_PUSH=false # TODO: document variables
 
 # PRs are checked out in detach mode, so they haven't any branch, so checking if this is != master
 # filters them away too
@@ -80,6 +73,15 @@ if [[ ! -z "${NEW_RELEASE_VER}" ]] && [[ ! -z "${NEW_SNAPSHOT_VER}" ]]; then
   echo -e "\n\n\tReleasing ${NEW_RELEASE_VER}, new snapshot will be: ${NEW_SNAPSHOT_VER}\n" 
   export IS_RELEASE=true
 fi
+
+
+if [[ ! `$IS_RELEASE` ]] && [[ `git log -1 --pretty=format:"%s"` =~ "$CI_SKIP_TAG" ]]; then
+	echo -e "\n$CI_SKIP_TAG prefix, ignoring this commit\n"
+	exit
+fi
+
+export NEEDS_PUSH=false # TODO: document variables
+
 
 
 # TODO: review documentation about handlers
