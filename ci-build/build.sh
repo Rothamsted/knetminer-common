@@ -75,7 +75,7 @@ if [[ ! -z "${NEW_RELEASE_VER}" ]] && [[ ! -z "${NEW_SNAPSHOT_VER}" ]]; then
 fi
 
 
-if [[ ! `$IS_RELEASE` ]] && [[ `git log -1 --pretty=format:"%s"` =~ "$CI_SKIP_TAG" ]]; then
+if [[ ! $IS_RELEASE ]] && [[ `git log -1 --pretty=format:"%s"` =~ "$CI_SKIP_TAG" ]]; then
 	echo -e "\n$CI_SKIP_TAG prefix, ignoring this commit\n"
 	exit
 fi
