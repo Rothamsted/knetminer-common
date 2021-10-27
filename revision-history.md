@@ -1,12 +1,11 @@
 # Revision History
 
-# 3.0.1-SNAPSHOT
+# 2.0.1-SNAPSHOT
 * Current snapshot 
 
-# 3.0
+# 2.0RC3
 * download-page added
 * Eclipse directive to ignore plug-ins added (avoid irrelevant warnings in Eclipse)
-* Adding CI building scripts
 
 ## 2.0RC2
 * Java 11 migration and other dependency upgrades
