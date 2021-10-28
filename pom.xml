@@ -16,6 +16,8 @@
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 				
 		<jutils.version>10.0</jutils.version>
+		<rdfutils.version>3.0-SNAPSHOT</rdfutils.version>		
+		
 		<springframework.version>5.3.1</springframework.version>
 
 
@@ -187,11 +189,17 @@
 				<artifactId>noexception</artifactId>
 				<version>1.3.2</version>
 			</dependency>
-			
+
+			<!-- Utilities for RDF and the Jena RDF framework -->
+	    <dependency>
+	      <groupId>info.marcobrandizi</groupId>
+	      <artifactId>rdfutils-core</artifactId>
+	      <version>${rdfutils.version}</version>
+	    </dependency>
   		<dependency>
 				<groupId>info.marcobrandizi</groupId>
 				<artifactId>rdfutils-jena</artifactId>
-				<version>3.0</version>
+				<version>${rdfutils.version}</version>
   		</dependency>  		
   		
 			<dependency>
