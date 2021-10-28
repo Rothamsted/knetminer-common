@@ -126,7 +126,9 @@ fi
 #
 if $IS_RELEASE; then
 	echo -e "\n\n\tCommitting ${NEW_RELEASE_VER} to github\n"
-	git commit -a -m "Releasing ${NEW_RELEASE_VER}. ${CI_SKIP_TAG}"
+	# --allow-empty is needed cause previous steps might have their own commits, with their
+	# own messages
+	git commit -a --allow-empty -m "Releasing ${NEW_RELEASE_VER}. ${CI_SKIP_TAG}"
 	
   # TODO: --force was used in Travis, cause it seems to place a tag automatically
 	git tag --force --annotate "${NEW_RELEASE_VER}" -m "Releasing ${NEW_RELEASE_VER}. ${CI_SKIP_TAG}"
