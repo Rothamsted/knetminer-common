@@ -8,13 +8,14 @@ In this README, we list the resources you find here.
 
 ## Index
 
-  * [Common parent POM](#common-parent-pom)
-  * [Deployment on our artifactory server](#deployment-on-our-artifactory-server)
-  * [Using multiple deployment profiles](#using-multiple-deployment-profiles)
-  * [Continuous integration support files](#continuous-integration-support-files)
-  * [Archetype for new projects](#archetype-for-new-projects)
-  * [Other common files](#other-common-files)
-  * [Usage examples](#usage-examples)
+* [Common parent POM](#common-parent-pom)
+* [Deployment on our artifactory server](#deployment-on-our-artifactory-server)
+* [Using multiple deployment profiles](#using-multiple-deployment-profiles)
+* [Continuous integration support files](#continuous-integration-support-files)
+* [Archetype for new projects](#archetype-for-new-projects)
+* [Downloading Page scripts](#downloading-page-scripts)
+* [Other common files](#other-common-files)
+* [Usage examples](#usage-examples)
 
     
 ## Common parent POM
@@ -67,7 +68,7 @@ credentials (else, just ask the Knetminer team admins). This makes builds faster
 in every POM where you need them (just the knetminer-repo listed above is needed).
 
 As usually, it also makes you available a number of dependencies, either about our own projects or third-parties, which
-youn can refer without having to specifying a version to use. For instance this:
+you can refer without having to specifying a version to use. For instance, this:
 
 ```xml
 <dependency>
@@ -78,7 +79,7 @@ youn can refer without having to specifying a version to use. For instance this:
   <groupId>org.apache.logging.log4j</groupId>
   <artifactId>log4j-core</artifactId>
 </dependency>
-```  
+```
 
 will point at the version defined in our parent POM, in its `dependencyManagement` section.  
 
@@ -111,7 +112,7 @@ $ mvn clean deploy --settings settings.xml
 ```
 
 As you can see, you need an account to write into our artifactory server. The OS variables used to define
-them are the same defined in `maven-settings.xml`. Maven has alternatives to do so (eg, `.m2/settings.xml`), though the 
+them are the same defined in [`maven-settings.xml`][20]. Maven has alternatives to do so (eg, `.m2/settings.xml`), though the 
 preferred way to deploy your project is via CI automation (see the next section).
 
 [20]: ci-build/maven-settings.xml
@@ -200,6 +201,7 @@ is being used.
 [60]: https://docs.github.com/en/free-pro-team@latest/actions/reference/encrypted-secrets
 [65]: https://jasonet.co/posts/scheduled-actions/
 
+
 ### Reusing build files and customising the build
 
 If you need a particular building flow, which different from our default only on a couple of details, you don't 
@@ -247,6 +249,13 @@ Details on how to use Maven archetypes are available in its [README][80].
 
 [70]: https://maven.apache.org/archetype/maven-archetype-plugin/index.html
 [80]: knetminer-archetype/README.md
+
+
+## Downloading Page scripts
+
+These are scripts that we use with KnetMiner Maven-based projects, to build download pages about the
+binary artifacts that are published on our Maven artifactory. See [here](download-page) for details.
+
 
 ## Other common files
 
