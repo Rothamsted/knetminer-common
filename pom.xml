@@ -15,7 +15,7 @@
 		<java.version>${maven.compiler.source}</java.version>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 				
-		<jutils.version>10.0-SNAPSHOT</jutils.version>
+		<jutils.version>10.0</jutils.version>
 		<springframework.version>5.3.1</springframework.version>
 
 
@@ -191,7 +191,7 @@
   		<dependency>
 				<groupId>info.marcobrandizi</groupId>
 				<artifactId>rdfutils-jena</artifactId>
-				<version>3.0-SNAPSHOT</version>
+				<version>3.0</version>
   		</dependency>  		
   		
 			<dependency>
