@@ -138,7 +138,7 @@ if $IS_RELEASE; then
 	mvn versions:commit $MAVEN_ARGS
 	
 	git commit -a -m "Switching version to ${NEW_SNAPSHOT_VER}. ${CI_SKIP_TAG}"
-	NEEDS_PUSH=true
+	export NEEDS_PUSH=true
 fi
 
 
