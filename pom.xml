@@ -26,7 +26,7 @@
 			We define them via variables, cause sometimes it's useful to override them.
 			We also use non-standard ports in order to avoid clashes with running instances. 
 		-->
-		<neo4j.server.version>4.3.2</neo4j.server.version>
+		<neo4j.server.version>4.4.1</neo4j.server.version>
 		<neo4j.server.boltPort>17690</neo4j.server.boltPort>
 		<neo4j.server.httpPort>17490</neo4j.server.httpPort>
 		<neo4j.server.deleteDb>true</neo4j.server.deleteDb>
