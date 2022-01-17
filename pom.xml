@@ -21,6 +21,8 @@
 		<springframework.version>5.3.15</springframework.version>
 		<com.fasterxml.jackson.version>2.13.1</com.fasterxml.jackson.version>
 
+		<!-- This is referred by submodules -->
+		<log4j.version>2.17.1</log4j.version>
 
 		<!-- 
 			These are for the neo4j server plug-in. 
@@ -114,10 +116,14 @@
 		    <scope>test</scope>
 		  </dependency>
 			
+			<!-- 
+				TODO: We still have sub-modules that refer specific log4j dependencies, by using the 
+				$log4j.version variable. We need to factorise.
+			 -->
 			<dependency>
       	<groupId>org.apache.logging.log4j</groupId>
       	<artifactId>log4j-bom</artifactId>
-      	<version>2.16.0</version>
+      	<version>${log4j.version}</version>
       	<scope>import</scope>
       	<type>pom</type>
     	</dependency>
