@@ -241,10 +241,10 @@
 										<goals>
 											<goal>exec</goal>
 										</goals>
-										</pluginExecutionFilter>
-										<action>
-											<ignore />
-										</action>
+									</pluginExecutionFilter>
+									<action>
+										<ignore />
+									</action>
 								</pluginExecution>
 								<pluginExecution>
 										<pluginExecutionFilter>
