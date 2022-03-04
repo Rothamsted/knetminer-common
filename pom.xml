@@ -266,9 +266,6 @@
 				
 			  <!-- 
 					A small plug-in that starts/stops Neo4j in a Maven build lifecycle. 
-					
-					1.0.1 is the official version that integrated our improvements at
-					at https://github.com/Rothamsted/neo4j-server-maven-plugin 
 			  -->
 	      <plugin>
 			    <groupId>com.github.harti2006</groupId>
