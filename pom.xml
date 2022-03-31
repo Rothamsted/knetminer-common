@@ -130,6 +130,11 @@
     	
 		  <!-- You need this if you want to YAML-config log4j2 -->
 			<dependency>
+				<groupId>com.fasterxml.jackson.core</groupId>
+				<artifactId>jackson-core</artifactId>
+				<version>2.13.2</version>
+			</dependency>
+			<dependency>
 				<groupId>com.fasterxml.jackson.dataformat</groupId>
 				<artifactId>jackson-dataformat-yaml</artifactId>
 				<version>${com.fasterxml.jackson.version}</version>
