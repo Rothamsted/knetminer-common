@@ -19,7 +19,7 @@
 		<rdfutils.version>3.0</rdfutils.version>		
 		
 		<springframework.version>5.3.18</springframework.version>
-		<com.fasterxml.jackson.version>2.13.1</com.fasterxml.jackson.version>
+		<com.fasterxml.jackson.version>2.13.2.1</com.fasterxml.jackson.version>
 
 		<!-- This is referred by submodules -->
 		<log4j.version>2.17.1</log4j.version>
