@@ -69,6 +69,14 @@
 			<snapshots><enabled>true</enabled></snapshots>
 			<releases><enabled>true</enabled></releases>
 		</pluginRepository>
+
+		<!-- Used with org.eclipse.m2e:lifecycle-mapping -->		
+		<pluginRepository>
+			<id>simulation.tudelft.nl</id>
+			<url>https://simulation.tudelft.nl/maven</url>
+			<snapshots><enabled>false</enabled></snapshots>
+			<releases><enabled>true</enabled></releases>
+		</pluginRepository>
 	</pluginRepositories>
 	
 	<distributionManagement>
