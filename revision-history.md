@@ -1,7 +1,10 @@
 # Revision History
 
+*This file was last reviewed on 18/5/2022.* **Please, keep this note updated**
+
 # 2.0.1-SNAPSHOT
-* Current snapshot 
+* JSON-related dependencies added
+* Various dependency upgrades 
 
 # 2.0
 * download-page added
