@@ -15,7 +15,7 @@
 		<java.version>${maven.compiler.source}</java.version>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 				
-		<jutils.version>10.0</jutils.version>
+		<jutils.version>10.0.1-SNAPSHOT</jutils.version>
 		<rdfutils.version>3.0</rdfutils.version>		
 		
 		<springframework.version>5.3.18</springframework.version>
