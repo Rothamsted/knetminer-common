@@ -346,7 +346,7 @@
 			          <name>listener</name>
 			          <value>uk.ac.ebi.utils.test.junit.TestOutputDecorator</value>
 			        </property>
-			       </properties>
+			      </properties>
 					</configuration>
 					<executions>
 						<execution>
