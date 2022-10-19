@@ -19,7 +19,7 @@
 		<jutils.version>11.0-SNAPSHOT</jutils.version>		
 		
 		<springframework.version>5.3.20</springframework.version>
-		<com.fasterxml.jackson.version>2.13.3</com.fasterxml.jackson.version>
+		<com.fasterxml.jackson.version>2.13.4.1</com.fasterxml.jackson.version>
 
 		<!-- This is referred by submodules -->
 		<log4j.version>2.17.2</log4j.version>
