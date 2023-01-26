@@ -18,7 +18,7 @@
 		<rdfutils.version>3.0</rdfutils.version>
 		<jutils.version>11.0.1-SNAPSHOT</jutils.version>		
 		
-		<springframework.version>5.3.25</springframework.version>
+		<springframework.version>6.0.0</springframework.version>
 		<com.fasterxml.jackson.version>2.14.1</com.fasterxml.jackson.version>
 
 		<!-- This is referred by submodules -->
