@@ -16,13 +16,13 @@
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 				
 		<rdfutils.version>3.0</rdfutils.version>
-		<jutils.version>11.0-SNAPSHOT</jutils.version>		
+		<jutils.version>11.0.1-SNAPSHOT</jutils.version>		
 		
-		<springframework.version>5.3.20</springframework.version>
-		<com.fasterxml.jackson.version>2.13.3</com.fasterxml.jackson.version>
+		<springframework.version>5.3.25</springframework.version>
+		<com.fasterxml.jackson.version>2.14.1</com.fasterxml.jackson.version>
 
 		<!-- This is referred by submodules -->
-		<log4j.version>2.17.2</log4j.version>
+		<log4j.version>2.18.0</log4j.version>
 
 		<!-- 
 			These are for the neo4j server plug-in. 
@@ -213,7 +213,7 @@
 			<dependency>
 				<groupId>com.machinezoo.noexception</groupId>
 				<artifactId>noexception</artifactId>
-				<version>1.3.2</version>
+				<version>1.9.0</version>
 			</dependency>
 
 			<!-- Utilities for RDF and the Jena RDF framework -->
