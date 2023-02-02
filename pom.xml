@@ -15,8 +15,8 @@
 		<java.version>${maven.compiler.source}</java.version>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 				
-		<rdfutils.version>3.0</rdfutils.version>
-		<jutils.version>11.0.1-SNAPSHOT</jutils.version>		
+		<rdfutils.version>4.0.3</rdfutils.version>
+		<jutils.version>11.0.1</jutils.version>		
 		
 		<springframework.version>5.3.25</springframework.version>
 		<com.fasterxml.jackson.version>2.14.1</com.fasterxml.jackson.version>
@@ -257,6 +257,12 @@
 		<pluginManagement>
 			<plugins>
 			
+				<plugin>
+          <groupId>org.apache.maven.plugins</groupId>
+          <artifactId>maven-source-plugin</artifactId>
+          <version>3.2.1</version>
+        </plugin>			
+			
         <plugin>
           <groupId>org.apache.maven.plugins</groupId>
           <artifactId>maven-compiler-plugin</artifactId>
@@ -269,7 +275,19 @@
 						<encoding>UTF-8</encoding>
 					</configuration>
         </plugin>
-			
+        
+        <plugin>
+          <groupId>org.apache.maven.plugins</groupId>
+          <artifactId>maven-jar-plugin</artifactId>
+          <version>3.3.0</version>
+        </plugin>
+
+	      <plugin>
+	        <groupId>org.apache.maven.plugins</groupId>
+	        <artifactId>maven-javadoc-plugin</artifactId>
+	        <version>3.4.1</version>
+	      </plugin>
+      			
 				<!--This plugin's configuration is used to store Eclipse m2e settings only. It has no influence on the Maven 
 				build itself. -->
 				<plugin>
@@ -431,4 +449,5 @@
 	<modules>
 			<module>knetminer-archetype</module>
 	</modules>
+
 </project>

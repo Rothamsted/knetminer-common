@@ -35,6 +35,21 @@
 		  <groupId>com.fasterxml.jackson.core</groupId>
 		  <artifactId>jackson-databind</artifactId>
 		</dependency>
+
+		<!-- 
+			TODO: These are needed by the listener we have in surefire, remove after this is fixed:  
+			https://issues.apache.org/jira/projects/SUREFIRE/issues/SUREFIRE-1917 		
+		-->
+		<dependency>
+			<groupId>uk.ac.ebi</groupId>
+			<artifactId>jutils</artifactId>
+			<scope>test</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.apache.logging.log4j</groupId>
+			<artifactId>log4j-slf4j-impl</artifactId>
+		</dependency>
+		
   </dependencies>
   
 </project>
