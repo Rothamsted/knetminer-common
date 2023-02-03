@@ -1,8 +1,10 @@
 # Revision History
 
-*This file was last reviewed on 2023-02-02.* **Please, keep this note updated.**
+*This file was last reviewed on 2023-02-03.* **Please, keep this note updated.**
 
-# 2.0.1-SNAPSHOT
+# 3.0.1-SNAPSHOT
+
+# 3.0
 * JSON-related dependencies added
 * Various dependency upgrades 
 
