@@ -338,7 +338,7 @@
 				  	NOTE: due to circular dependency, this is the version of the plug-in that is used
 				  	by clients, it's NOT the version that the plug-in itself has in its own POM. 
 				  -->
-				  <version>2.0.1-SNAPSHOT</version>
+				  <version>3.0</version>
 					<configuration>
 						<version>${neo4j.server.version}</version>
 						<port>${neo4j.server.httpPort}</port>
