@@ -3,7 +3,7 @@
 *This file was last reviewed on 2023-02-03.* **Please, keep this note updated.**
 
 # 3.0.2-SNAPSHOT
-* Current snapshot
+* build.sh extended to support multiple deploy branches
 
 # 3.0.1
 * JSON-related dependencies added
