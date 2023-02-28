@@ -59,20 +59,33 @@ export MAVEN_ARGS='--no-transfer-progress --batch-mode'
 # PRs are checked out in detach mode, so they haven't any branch, so checking if this is != master
 # filters them away too
 export GIT_BRANCH=`git branch --show-current`
-export DEPLOY_BRANCH=master # TODO: or a list?
+
+# If the current branch is one of these, then we have to do deploy operations, else
+# we only do rebuilds. This distinguishes between eg, release branches and experimental branches or 
+# pull requests.
+# 
+export DEPLOY_BRANCHES='master' # A list of branches, separated by spaces
+
+# TODO: review documentation about handlers
+# This can change the variables above, or pre-set some of the variables used below
+[[ -e ./ci-build/build-begin.sh ]] && . ./ci-build/build-begin.sh
+
+
+[[ " $DEPLOY_BRANCHES " =~ " $GIT_BRANCH " ]] && export IS_DEPLOY=true || IS_DEPLOY=false
 
 
 # Manage releasing too, when these vars are defined
 #
-export IS_RELEASE=false
-if [[ ! -z "${NEW_RELEASE_VER}" ]] && [[ ! -z "${NEW_SNAPSHOT_VER}" ]]; then
-	if [[ "$GIT_BRANCH" != 'master' ]]; then
-		echo -e "\n\nERROR: use releasing parameters with the main repo and the master branch only!\n"
+[[ ! -z "${NEW_RELEASE_VER}" ]] && [[ ! -z "${NEW_SNAPSHOT_VER}" ]] \
+  && IS_RELEASE=true || IS_RELEASE=false
+
+if $IS_RELEASE; then
+  if ! $IS_DEPLOY; then
+		echo -e "\n\nERROR: Can't do a release for a non-deploy branch, check DEPLOY_BRANCHES or the running branch\n"
 		exit 1
-	fi 
-  echo -e "\n\n\tReleasing ${NEW_RELEASE_VER}, new snapshot will be: ${NEW_SNAPSHOT_VER}\n" 
-  export IS_RELEASE=true
-fi
+	fi
+	echo -e "\n\n\tReleasing ${NEW_RELEASE_VER}, new snapshot will be: ${NEW_SNAPSHOT_VER}\n" 
+fi 
 
 
 if ! $IS_RELEASE && [[ `git log -1 --pretty=format:"%s"` =~ "$CI_SKIP_TAG" ]]; then
@@ -81,11 +94,6 @@ if ! $IS_RELEASE && [[ `git log -1 --pretty=format:"%s"` =~ "$CI_SKIP_TAG" ]]; t
 fi
 
 export NEEDS_PUSH=false # TODO: document variables
-
-
-
-# TODO: review documentation about handlers
-[[ -e ./ci-build/build-begin.sh ]] && . ./ci-build/build-begin.sh
 
 
 # These need to be configured by the CI
@@ -99,7 +107,7 @@ if $IS_RELEASE; then
   mvn versions:commit $MAVEN_ARGS
 fi
 
-if [[ "$GIT_BRANCH" == "$DEPLOY_BRANCH" ]]; then 
+if $IS_DEPLOY; then 
 	echo -e "\n\n\tMaven Deployment\n"
 	export MAVEN_GOAL='deploy'
 else
@@ -108,6 +116,7 @@ else
 fi
 
 [[ -e ./ci-build/build-before.sh ]] && . ./ci-build/build-before.sh
+
 if [[ -e ./ci-build/build-body.sh ]]; then
   . ./ci-build/build-body.sh
 else
@@ -116,8 +125,8 @@ fi
  
 [[ -e ./ci-build/build-after.sh ]] && . ./ci-build/build-after.sh
 
-if [[ "$GIT_BRANCH" != "$DEPLOY_BRANCH" ]]; then
-  echo -e "\n\n\tNot in the main repo, and/or not in the master branch, build ends here. Bye.\n"
+if ! $IS_DEPLOY; then
+  echo -e "\n\n\tThis is not a deployment build, all ends here. Bye.\n"
 	exit
 fi
 

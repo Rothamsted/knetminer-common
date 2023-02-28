@@ -7,10 +7,10 @@ set -e
 
 export GIT_USER=marco-brandizi
 export GIT_USER_EMAIL=marco.brandizi@rothamsted.ac.uk
-[[ -z "$GIT_PASSWORD" ]] && { echo GIT_PASSWORD is empty; exit 1; }
+[[ -z "$GIT_PASSWORD" ]] && { echo "GIT_PASSWORD is empty"; exit 1; }
 
-[[ -z "$KNET_REPO_USER" ]] && { echo KNET_REPO_USER is empty; exit 1; }
-[[ -z "$KNET_REPO_PASSWORD" ]] && { echo KNET_REPO_PASSWORD is empty; exit 1; }
+[[ -z "$KNET_REPO_USER" ]] && { echo "KNET_REPO_USER is empty"; exit 1; }
+[[ -z "$KNET_REPO_PASSWORD" ]] && { echo "KNET_REPO_PASSWORD is empty"; exit 1; }
 
 
 start_dir=`pwd`
