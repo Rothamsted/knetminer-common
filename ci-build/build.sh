@@ -1,7 +1,19 @@
 set -e
 
+# =====> stage init:
+#   Initialises various aspects of the whole build, including setting variables, downloading
+#   and generating code, updating caches, switching code version.
+#
+
+# TODO: This needs to be completed and tested, see below
+#
+# Sends a failure notification to addresses listed in CI_NOTIFIED_EMAILS. Does nothing if
+# this variable is empty.
+# 
 function notify_failure 
 {
+	[[ -z "$CI_NOTIFIED_EMAILS" ]] && return
+
 	CI_SUBJECT="{CI_SUBJECT-CI build failure for $GITHUB_REPOSITORY}"
 	run_url="${GITHUB_SERVER_URL}/${GITHUB_REPOSITORY}/actions/runs/${GITHUB_RUN_ID}"
 	CI_FAIL_MESSAGE="{CI_FAIL_MESSAGE-Sorry, build for this repo failed, see details at $run_url}"
@@ -52,8 +64,40 @@ cd ..
 export MYDIR="`pwd`"
 
 
-# TODO: document the vars
-export CI_SKIP_TAG='[ci skip]'
+
+
+
+# build-local:
+#   Runs mainly local build tasks, including compiling, unit testing. Possibly, this also 
+#   does remote things, if they're integrated with the paricular task (eg, 'maven deploy')
+#
+# deploy-distro:
+#   Deploys the distribution files, if not already done during build-local, updates SCM (ie, 
+#   push to github).
+#  
+# deploy-resources:
+#   Deploys further resources, eg, Docker images, test servers.
+#
+# integration-tests:
+#   Runs tests that needs deployed resources, such as test servers.
+#
+# finalize: 
+#   Further operatinons and updates, which finalises a successful build, eg, tags and pushes
+#   via git, tag a Docker image.
+# 
+# close:
+#   Final operations, eg, disposal of temp files, closing temp test servers.
+#   This is always invoked, even in case of failure, so the implementation should decide
+#   whether an operation here depends on a successful/failed build, or it's unconditional.
+#
+
+
+
+
+
+
+
+
 export MAVEN_ARGS='--no-transfer-progress --batch-mode'
 
 # PRs are checked out in detach mode, so they haven't any branch, so checking if this is != master
