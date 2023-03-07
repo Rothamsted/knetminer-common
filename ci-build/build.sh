@@ -1,24 +1,27 @@
 set -e
 
-function notify_failure 
+# Notify build failures using a Slack webhook
+# Realised with https://www.howtogeek.com/devops/how-to-send-a-message-to-slack-from-a-bash-script
+#
+function notify_failure
 {
-	CI_SUBJECT="{CI_SUBJECT-CI build failure for $GITHUB_REPOSITORY}"
-	run_url="${GITHUB_SERVER_URL}/${GITHUB_REPOSITORY}/actions/runs/${GITHUB_RUN_ID}"
-	CI_FAIL_MESSAGE="{CI_FAIL_MESSAGE-Sorry, build for this repo failed, see details at $run_url}"
-	CI_MAIL_FROM="{CI_MAIL_FROM-$GIT_USER_EMAIL}"
-	
-	sendemail -f "$CI_MAIL_FROM" -t $CI_NOTIFIED_EMAILS \
-	-m "$CI_FAIL_MESSAGE" \
-	-u "$CI_SUBJECT" \
-	-s "$CI_SMTP_SERVER" -xu "$CI_SMTP_USER" -xp "$CI_SMTP_PASSWORD" \
-	-o tls=yes
+  run_url="${GITHUB_SERVER_URL}/${GITHUB_REPOSITORY}/actions/runs/${GITHUB_RUN_ID}"
+  if [[ -z "$CI_FAIL_MESSAGE" ]]; then
+    # Slack uses a reduced version of MD (https://api.slack.com/reference/surfaces/formatting)
+    CI_FAIL_MESSAGE="*CI build failure for $GITHUB_REPOSITORY*"
+    CI_FAIL_MESSAGE="$CI_FAIL_MESSAGE\n\nSorry, the build for this repo failed, see details <$run_url|here>.\n"
+  fi
+
+  curl -X POST -H 'Content-type: application/json' \
+    --data "{ \"text\": \"$CI_FAIL_MESSAGE\" }" \
+    "$CI_SLACK_API_NOTIFICATION_URL"
 }
 
 # TODO: To be completed (including variables above)
 # Needed to send notifications
-#apt-get -y update
-#apt-get -y sendemail
-# trap notify_failure ERR
+# apt-get -y update
+# apt-get -y curl
+trap notify_failure ERR
 
 if [[ "$CI_TRIGGERING_EVENT" == 'schedule' ]]; then
 	
@@ -46,6 +49,7 @@ EOT
 	fi
 fi
 
+exit 1
 
 cd `dirname "$0"`
 cd ..
