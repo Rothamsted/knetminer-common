@@ -22,8 +22,7 @@ function notify_failure
     "$CI_SLACK_API_NOTIFICATION_URL"
 }
 
-# TODO: To be completed (including variables above)
-# Needed to send notifications
+# Needed to send notifications, but normally it's there by default
 # apt-get -y update
 # apt-get -y curl
 trap notify_failure ERR
