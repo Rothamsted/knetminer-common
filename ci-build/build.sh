@@ -54,8 +54,6 @@ EOT
 	fi
 fi
 
-foo
-
 cd `dirname "$0"`
 cd ..
 export MYDIR="`pwd`"
