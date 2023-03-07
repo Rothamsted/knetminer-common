@@ -12,6 +12,11 @@ function notify_failure
     CI_FAIL_MESSAGE="$CI_FAIL_MESSAGE\n\nSorry, the build for this repo failed, see details <$run_url|here>.\n"
   fi
 
+	if [[ -z "$CI_SLACK_API_NOTIFICATION_URL" ]]; then
+	  printf "\n\nERROR: can't send error notification to empty Slack URL\n\n"
+	  exit 1
+	fi
+
   curl -X POST -H 'Content-type: application/json' \
     --data "{ \"text\": \"$CI_FAIL_MESSAGE\" }" \
     "$CI_SLACK_API_NOTIFICATION_URL"
