@@ -49,7 +49,7 @@ EOT
 	fi
 fi
 
-exit 1
+foo
 
 cd `dirname "$0"`
 cd ..
