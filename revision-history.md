@@ -1,9 +1,17 @@
 # Revision History
 
-*This file was last reviewed on 2023-02-03.* **Please, keep this note updated.**
+*This file was last reviewed on 2023-02-08.* **Please, keep this note updated.**
 
-# 3.0.2-SNAPSHOT
+# 3.1.1-SNAPSHOT
+* Current snapshot
+
+# 3.1
 * build.sh extended to support multiple deploy branches
+* Minor fixes in the archetype utility
+* More plug-ins added to the common POM
+* Dependency upgrades to the common POM
+* Multiple branches for CI scripts
+* Failure notification to Slack for CI script
 
 # 3.0.1
 * JSON-related dependencies added
