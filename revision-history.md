@@ -1,9 +1,10 @@
 # Revision History
 
-*This file was last reviewed on 2023-02-08.* **Please, keep this note updated.**
+*This file was last reviewed on 2023-02-16.* **Please, keep this note updated.**
 
 # 3.1.1-SNAPSHOT
-* Current snapshot
+## CI scripts:
+* --no-transfer-progress
 
 # 3.1
 * build.sh extended to support multiple deploy branches
