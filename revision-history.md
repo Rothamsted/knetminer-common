@@ -4,7 +4,7 @@
 
 # 3.1.1-SNAPSHOT
 ## CI scripts:
-* --no-transfer-progress
+* --no-transfer-progress removed from default options, since it hides important uploading messages
 
 # 3.1
 * build.sh extended to support multiple deploy branches
