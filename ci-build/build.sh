@@ -60,7 +60,10 @@ export MYDIR="`pwd`"
 
 # TODO: document the vars
 export CI_SKIP_TAG='[ci skip]'
-export MAVEN_ARGS='--no-transfer-progress --batch-mode'
+# --no-transfer-progress removes annoying 'Downloading...' messages, but also 
+# Upload messages, so it was removed in 2023, local customisations have to add it back
+# for very verbose builds.
+export MAVEN_ARGS='--batch-mode'
 
 # PRs are checked out in detach mode, so they haven't any branch, so checking if this is != master
 # filters them away too
