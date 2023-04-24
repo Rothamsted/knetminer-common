@@ -1,36 +1,34 @@
 set -e
 
-# =====> stage init:
-#   Initialises various aspects of the whole build, including setting variables, downloading
-#   and generating code, updating caches, switching code version.
+# Notify build failures using a Slack webhook
+# Realised with https://www.howtogeek.com/devops/how-to-send-a-message-to-slack-from-a-bash-script
 #
-
-# TODO: This needs to be completed and tested, see below
-#
-# Sends a failure notification to addresses listed in CI_NOTIFIED_EMAILS. Does nothing if
-# this variable is empty.
-# 
-function notify_failure 
+function notify_failure
 {
-	[[ -z "$CI_NOTIFIED_EMAILS" ]] && return
+  run_url="${GITHUB_SERVER_URL}/${GITHUB_REPOSITORY}/actions/runs/${GITHUB_RUN_ID}"
+  if [[ -z "$CI_FAIL_MESSAGE" ]]; then
+    # Slack uses a reduced version of MD (https://api.slack.com/reference/surfaces/formatting)
+    CI_FAIL_MESSAGE="*CI build failure for $GITHUB_REPOSITORY*"
+    CI_FAIL_MESSAGE="$CI_FAIL_MESSAGE\n\nSorry, the build for this repo failed, see details <$run_url|here>.\n"
+  fi
 
-	CI_SUBJECT="{CI_SUBJECT-CI build failure for $GITHUB_REPOSITORY}"
-	run_url="${GITHUB_SERVER_URL}/${GITHUB_REPOSITORY}/actions/runs/${GITHUB_RUN_ID}"
-	CI_FAIL_MESSAGE="{CI_FAIL_MESSAGE-Sorry, build for this repo failed, see details at $run_url}"
-	CI_MAIL_FROM="{CI_MAIL_FROM-$GIT_USER_EMAIL}"
-	
-	sendemail -f "$CI_MAIL_FROM" -t $CI_NOTIFIED_EMAILS \
-	-m "$CI_FAIL_MESSAGE" \
-	-u "$CI_SUBJECT" \
-	-s "$CI_SMTP_SERVER" -xu "$CI_SMTP_USER" -xp "$CI_SMTP_PASSWORD" \
-	-o tls=yes
+	if [[ -z "$CI_SLACK_API_NOTIFICATION_URL" ]]; then
+	  printf "\n\nERROR: can't send error notification to empty Slack URL\n\n"
+	  exit 1
+	fi
+
+  curl -X POST -H 'Content-type: application/json' \
+    --data "{ \"text\": \"$CI_FAIL_MESSAGE\" }" \
+    "$CI_SLACK_API_NOTIFICATION_URL"
 }
 
-# TODO: To be completed (including variables above)
-# Needed to send notifications
-#apt-get -y update
-#apt-get -y sendemail
+# Needed to send notifications, but normally it's there by default
+# apt-get -y update
+# apt-get -y curl
+
+# TODO: re-enable when development is complete enough
 # trap notify_failure ERR
+
 
 if [[ "$CI_TRIGGERING_EVENT" == 'schedule' ]]; then
 	
@@ -63,7 +61,32 @@ cd `dirname "$0"`
 cd ..
 export MYDIR="`pwd`"
 
+# github already supports this, when a commit message has a tag like this, it doesn't invoke
+# any action at all. However, these scripts are generic and hence we want to manage this 
+# here too. Morover, we use this tag to skip our own commits.
+# 
+export SKIP_TAG='[ci skip]'
 
+
+# PRs are checked out in detach mode, so they haven't any branch, so checking if this is != master
+# filters them away too
+export GIT_BRANCH=`git branch --show-current`
+
+# If the current branch is one of these, then we have to do deploy operations, else
+# we only do rebuilds. This distinguishes between eg, release branches and experimental branches or 
+# pull requests.
+# 
+export DEPLOY_BRANCHES='master' # A list of branches, separated by spaces
+
+export NEEDS_PUSH=false # TODO: document variables
+
+
+[[ " $DEPLOY_BRANCHES " =~ " $GIT_BRANCH " ]] && export IS_DEPLOY=true || IS_DEPLOY=false
+
+# If the corresponding vars are set, manage releasing with a variant of the build procedure
+#
+[[ ! -z "${CI_NEW_RELEASE_VER}" ]] && [[ ! -z "${CI_NEW_SNAPSHOT_VER}" ]] \
+  && export IS_RELEASE=true || exprt IS_RELEASE=false
 
 
 
@@ -71,25 +94,150 @@ export MYDIR="`pwd`"
 #   Runs mainly local build tasks, including compiling, unit testing. Possibly, this also 
 #   does remote things, if they're integrated with the paricular task (eg, 'maven deploy')
 #
+function build_local_begin {}
+function build_local_body {}
+function build_local_end {}
+
+function build_local
+{
+  build_local_begin	
+	
+	if $IS_RELEASE; then
+	  if ! $IS_DEPLOY; then
+			printf "\n\nERROR: Can't do a release for a non-deploy branch, check DEPLOY_BRANCHES or the running branch\n"
+			exit 1
+		fi
+		echo -e "\n\n\tReleasing ${NEW_RELEASE_VER}, new snapshot will be: ${NEW_SNAPSHOT_VER}\n" 
+	fi
+	
+	# When we're skipping the last commit, ignore the release thing too
+	if ! $IS_RELEASE && [[ `git log -1 --pretty=format:"%s"` =~ "$CI_SKIP_TAG" ]]; then
+		echo -e "\n$CI_SKIP_TAG prefix, ignoring this commit\n"
+		exit
+	fi
+	
+	# TODO: review where vars and secrets should come from (github or gist)
+	#
+	git config --global user.name "$CI_GIT_USER"
+	git config --global user.email "$CI_GIT_USER_EMAIL"
+	git config --global "url.https://$CI_GIT_USER:$CI_GIT_PASSWORD@github.com.insteadof" "https://github.com"
+	
+  build_local_body
+  
+	build_local_end
+}
+
+
 # deploy-distro:
 #   Deploys the distribution files, if not already done during build-local, updates SCM (ie, 
 #   push to github).
-#  
+#
+function deploy_distro_begin {}
+function deploy_distro_body {}
+function deploy_distro_end {}
+
+function deploy_distro
+{
+	deploy_distro_begin
+
+	if ! $IS_DEPLOY; then
+	  echo -e "\n\n\tThis is not a deployment build, all ends here. Bye.\n"
+		exit
+	fi
+
+	deploy_distro_body
+
+	# Manage the release aspects that deal with updating git
+	#
+	if $IS_RELEASE; then
+		echo -e "\n\n\tCommitting ${NEW_RELEASE_VER} to github\n"
+		# --allow-empty is needed cause previous steps might have their own commits, with their
+		# own messages
+		git commit -a --allow-empty -m "Releasing ${NEW_RELEASE_VER}. ${CI_SKIP_TAG}"
+		
+	  # TODO: --force was used in Travis, cause it seems to place a tag automatically
+		git tag --force --annotate "${NEW_RELEASE_VER}" -m "Releasing ${NEW_RELEASE_VER}. ${CI_SKIP_TAG}"
+				
+		git commit -a -m "Switching version to ${NEW_SNAPSHOT_VER}. ${CI_SKIP_TAG}"
+		# You shouldn't reset it in the follow, since we actually need it
+		export NEEDS_PUSH=true
+	fi
+		
+	deploy_distro_end 
+}
+
+
+
 # deploy-resources:
 #   Deploys further resources, eg, Docker images, test servers.
 #
+function deploy_resources_begin {}
+function deploy_resources_body {}
+function deploy_resources_end {}
+
+function deploy_resources
+{
+	deploy_resources_begin
+	deploy_resources_body
+	deploy_resources_end
+}
+
+
 # integration-tests:
-#   Runs tests that needs deployed resources, such as test servers.
+#   Runs tests that needs deployed resources like test servers.
 #
+function integration_tests_begin {}
+function integration_tests_body {}
+function integration_tests_end {}
+
 # finalize: 
 #   Further operatinons and updates, which finalises a successful build, eg, tags and pushes
 #   via git, tag a Docker image.
-# 
+#
+function finalize_begin {}
+function finalize_body {}
+function finalize_end {}
+
 # close:
 #   Final operations, eg, disposal of temp files, closing temp test servers.
 #   This is always invoked, even in case of failure, so the implementation should decide
 #   whether an operation here depends on a successful/failed build, or it's unconditional.
 #
+function close_begin {}
+function close_body {}
+function close_end {}
+
+
+ 
+printf "\n\n  ---- Building for the %s flavor ----\n\n" $CI_BUILD_FLAVOR 
+
+flavor_hooks_path="$MYDIR/${CI_BUILD_FLAVOR}-hooks.sh"
+
+if [[ ! -e "$flavor_hooks_path" ]]; then
+  printf "\n  ERROR: no flavour hooks \"%s\" found, check the CI downloads work\n\n" "$flavor_hooks_path"
+  exit 1 
+fi
+
+# Redefines the base hooks above, based on the specific flavour. This file can contain
+# hook functions that override the base implementations above.
+# 
+. "$default_hooks_path"
+
+custom_hooks_path="$MYDIR/${CI_BUILD_FLAVOR}-hooks-custom.sh"
+
+if [[ -e "$custom_hooks_path" ]]; then
+	printf "\n  No custom hooks \"%s\" found, using defaults\n\n" "$custom_hooks_path"
+else
+  # Else, loads them
+  . "$custom_hooks_path"
+fi 
+
+
+## ------ BEGIN BUILD
+
+
+
+
 
 
 
