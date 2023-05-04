@@ -94,14 +94,8 @@ export NEEDS_PUSH=false # TODO: document variables
 #   Runs mainly local build tasks, including compiling, unit testing. Possibly, this also 
 #   does remote things, if they're integrated with the paricular task (eg, 'maven deploy')
 #
-function build_local_begin {}
-function build_local_body {}
-function build_local_end {}
-
-function build_local
-{
-  build_local_begin	
-	
+function build_local_base_begin
+{	
 	if $IS_RELEASE; then
 	  if ! $IS_DEPLOY; then
 			printf "\n\nERROR: Can't do a release for a non-deploy branch, check DEPLOY_BRANCHES or the running branch\n"
@@ -115,16 +109,8 @@ function build_local
 		echo -e "\n$CI_SKIP_TAG prefix, ignoring this commit\n"
 		exit
 	fi
-	
-	# TODO: review where vars and secrets should come from (github or gist)
-	#
-	git config --global user.name "$CI_GIT_USER"
-	git config --global user.email "$CI_GIT_USER_EMAIL"
-	git config --global "url.https://$CI_GIT_USER:$CI_GIT_PASSWORD@github.com.insteadof" "https://github.com"
-	
-  build_local_body
-  
-	build_local_end
+
+	set_git_credentials	
 }
 
 
@@ -132,9 +118,6 @@ function build_local
 #   Deploys the distribution files, if not already done during build-local, updates SCM (ie, 
 #   push to github).
 #
-function deploy_distro_begin {}
-function deploy_distro_body {}
-function deploy_distro_end {}
 
 function deploy_distro
 {
@@ -208,6 +191,28 @@ function close_body {}
 function close_end {}
 
 
+
+function do_if_exists
+{
+	fun=$1
+	declare -F "$fun" >/dev/null && $fun || return 
+}
+
+function do_stage
+{
+  stage=$1
+
+  do_if_exists ${stage}_begin
+  do_if_exists ${stage}_flavor_begin
+  do_if_exists ${stage}_base_begin
+  ${stage}_body
+  do_if_exists ${stage}_base_end
+  do_if_exists ${stage}_flavor_end  
+  do_if_exists ${stage}_end
+}
+
+
+
  
 printf "\n\n  ---- Building for the %s flavor ----\n\n" $CI_BUILD_FLAVOR 
 
@@ -221,22 +226,32 @@ fi
 # Redefines the base hooks above, based on the specific flavour. This file can contain
 # hook functions that override the base implementations above.
 # 
-. "$default_hooks_path"
+. "$flavor_hooks_path"
 
-custom_hooks_path="$MYDIR/${CI_BUILD_FLAVOR}-hooks-custom.sh"
+local_hooks_path="$MYDIR/${CI_BUILD_FLAVOR}-hooks-local.sh"
 
-if [[ -e "$custom_hooks_path" ]]; then
-	printf "\n  No custom hooks \"%s\" found, using defaults\n\n" "$custom_hooks_path"
+if [[ -e "$local_hooks_path" ]]; then
+	printf "\n  No local hooks \"%s\" found, using defaults for %s\n\n" "$local_hooks_path" $CI_BUILD_FLAVOR
 else
   # Else, loads them
-  . "$custom_hooks_path"
+  . "$local_hooks_path"
 fi 
 
 
-## ------ BEGIN BUILD
+for stage in build_local deploy distro
+do
+  do_stage $stage
+done
 
 
-
+# ----- Support helpers
+function set_git_credentials
+{
+	# TODO: review where vars and secrets should come from (github or gist)
+	git config --global user.name "$CI_GIT_USER"
+	git config --global user.email "$CI_GIT_USER_EMAIL"
+	git config --global "url.https://$CI_GIT_USER:$CI_GIT_PASSWORD@github.com.insteadof" "https://github.com"
+}
 
 
 
