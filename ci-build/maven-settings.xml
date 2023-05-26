@@ -7,7 +7,7 @@
     
     <server>
 			<id>knetminer-snapshots</id>
-			<!-- This is to be set in your OS. In Travis, it's typically part of your project settings -->
+			<!-- This is to be set in your OS or CI system -->
       <username>${env.KNET_REPO_USER}</username>
       <password>${env.KNET_REPO_PASSWORD}</password>
 	  </server>
