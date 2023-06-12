@@ -1,10 +1,13 @@
 # Revision History
 
-*This file was last reviewed on 2023-02-16.* **Please, keep this note updated.**
+*This file was last reviewed on 2023-06-09.* **Please, keep this note updated.**
 
 # 3.1.1-SNAPSHOT
-## CI scripts:
+* Internal repo re-added for testing purposes.
+
+## CI scripts:
 * --no-transfer-progress removed from default options, since it hides important uploading messages
+
 
 # 3.1
 * build.sh extended to support multiple deploy branches
