@@ -4,7 +4,7 @@
   
   <groupId>uk.ac.rothamsted.knetminer</groupId>
   <artifactId>knetminer-common</artifactId>
-  <version>4.0.1-SNAPSHOT</version>
+  <version>4.0</version>
   <packaging>pom</packaging>
   
   <name>knetminer-common (common POM for Knetminer projects)</name>
