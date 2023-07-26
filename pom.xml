@@ -4,19 +4,19 @@
   
   <groupId>uk.ac.rothamsted.knetminer</groupId>
   <artifactId>knetminer-common</artifactId>
-  <version>3.1.1-SNAPSHOT</version>
+  <version>4.0-SNAPSHOT</version>
   <packaging>pom</packaging>
   
   <name>knetminer-common (common POM for Knetminer projects)</name>
   
 	<properties>
-		<maven.compiler.source>11</maven.compiler.source>
+		<maven.compiler.source>17</maven.compiler.source>
 		<maven.compiler.target>${maven.compiler.source}</maven.compiler.target>
 		<java.version>${maven.compiler.source}</java.version>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 				
-		<rdfutils.version>4.1</rdfutils.version>
-		<jutils.version>11.1</jutils.version>		
+		<rdfutils.version>5.0</rdfutils.version>
+		<jutils.version>12.0</jutils.version>		
 		
 		<springframework.version>5.3.25</springframework.version>
 		<com.fasterxml.jackson.version>2.14.1</com.fasterxml.jackson.version>
@@ -29,7 +29,7 @@
 			We define them via variables, cause sometimes it's useful to override them.
 			We also use non-standard ports in order to avoid clashes with running instances. 
 		-->
-		<neo4j.server.version>4.4.1</neo4j.server.version>
+		<neo4j.server.version>5.10.0</neo4j.server.version>
 		<neo4j.server.boltPort>17690</neo4j.server.boltPort>
 		<neo4j.server.httpPort>17490</neo4j.server.httpPort>
 		<neo4j.server.deleteDb>true</neo4j.server.deleteDb>
@@ -176,7 +176,7 @@
       <dependency>
         <groupId>org.neo4j.driver</groupId>
         <artifactId>neo4j-java-driver</artifactId>
-        <version>4.4.2</version>
+        <version>5.10.0</version>
       </dependency>			
 			
 			<!-- Needed in Java >= 11 -->	  
@@ -338,7 +338,7 @@
 				  	NOTE: due to circular dependency, this is the version of the plug-in that is used
 				  	by clients, it's NOT the version that the plug-in itself has in its own POM. 
 				  -->
-				  <version>3.0</version>
+				  <version>4.0</version>
 					<configuration>
 						<version>${neo4j.server.version}</version>
 						<port>${neo4j.server.httpPort}</port>

@@ -1,6 +1,15 @@
 # Revision History
 
-*This file was last reviewed on 2023-06-09.* **Please, keep this note updated.**
+*This file was last reviewed on 2023-07-26.* **Please, keep this note updated.**
+
+
+# 4.0.1-SNAPSHOT
+* Current snapshot
+
+
+# 4.0
+* Migrated to Java 17. **WARNING: no backward compatibility guaranteed**.
+
 
 # 3.1.1-SNAPSHOT
 * Internal repo re-added for testing purposes.

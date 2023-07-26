@@ -4,7 +4,7 @@
   <parent>
     <groupId>uk.ac.rothamsted.knetminer</groupId>
     <artifactId>knetminer-common</artifactId>
-    <version>3.0.1</version>
+    <version>4.0</version>
   </parent>
   
 	<groupId>${groupId}</groupId>
