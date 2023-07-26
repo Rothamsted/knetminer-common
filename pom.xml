@@ -33,7 +33,8 @@
 		<neo4j.server.boltPort>17690</neo4j.server.boltPort>
 		<neo4j.server.httpPort>17490</neo4j.server.httpPort>
 		<neo4j.server.deleteDb>true</neo4j.server.deleteDb>
-		<neo4j.server.password>test</neo4j.server.password>
+		<!-- Since 5.10.0, you need a password of at least 8 chars -->
+		<neo4j.server.password>testTest</neo4j.server.password>
 		<neo4j.server.serverReadyAttempts>60</neo4j.server.serverReadyAttempts>
 		
 		<!-- These are defined as properties, so that you can reuse/override them, eg, in a profile -->
