@@ -261,13 +261,13 @@
 				<plugin>
           <groupId>org.apache.maven.plugins</groupId>
           <artifactId>maven-source-plugin</artifactId>
-          <version>3.2.1</version>
+          <version>3.3.0</version>
         </plugin>			
 			
         <plugin>
           <groupId>org.apache.maven.plugins</groupId>
           <artifactId>maven-compiler-plugin</artifactId>
-          <version>3.10.1</version>
+          <version>3.11.0</version>
 					<configuration>
 						<source>${java.version}</source>
 						<target>${java.version}</target>
@@ -286,7 +286,7 @@
 	      <plugin>
 	        <groupId>org.apache.maven.plugins</groupId>
 	        <artifactId>maven-javadoc-plugin</artifactId>
-	        <version>3.4.1</version>
+	        <version>3.5.0</version>
 	      </plugin>
       			
 				<!--This plugin's configuration is used to store Eclipse m2e settings only. It has no influence on the Maven 
@@ -369,7 +369,7 @@
 						This happens in M5: https://issues.apache.org/jira/browse/SUREFIRE-1809
 						They've a workaround, but it's quicker to wait for M6 
 					-->
-					<version>3.0.0-M4</version>
+					<version>3.1.2</version>
 					<configuration>
 						<trimStackTrace>false</trimStackTrace>
 			      <properties>
@@ -409,7 +409,7 @@
 			    		 A workaround to using latest versions is to 
 			    		 include jutils as a dependency in your project
 			    -->
-			    <version>3.0.0-M5</version>
+			    <version>3.1.2</version>
 
 			    <configuration>
 			      <properties>
@@ -434,7 +434,7 @@
 		  				
 				<plugin>
 					<artifactId>maven-assembly-plugin</artifactId>
-					<version>3.3.0</version>
+					<version>3.6.0</version>
 					<configuration>
 						<archiverConfig>
 							<fileMode>0755</fileMode>
@@ -446,7 +446,7 @@
 				
 	  		<plugin>
 	  			<artifactId>maven-dependency-plugin</artifactId>
-	  			<version>3.1.2</version>
+	  			<version>3.6.0</version>
 				</plugin>
 				
 				<plugin>
@@ -457,7 +457,7 @@
 								
 		  	<plugin>
 		    	<artifactId>maven-clean-plugin</artifactId>
-		    	<version>3.2.0</version>
+		    	<version>3.3.1</version>
 		    </plugin>
 								  				      	        				
 			</plugins>		
