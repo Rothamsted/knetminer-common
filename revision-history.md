@@ -4,7 +4,7 @@
 
 
 # 4.0.1-SNAPSHOT
-* Current snapshot
+* Maven plug-ins upgraded.
 
 
 # 4.0
