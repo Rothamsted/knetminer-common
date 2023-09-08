@@ -476,5 +476,13 @@
 				<knetminer.mvnrepo.snapshots.url>http://babvs58.rothamsted.ac.uk:8081/artifactory/repository/maven-snapshots</knetminer.mvnrepo.snapshots.url>
 			</properties>
 		</profile>
+		
+		<!-- TODO: remove, it's just to be test the new internal repos. -->
+		<profile>
+			<id>nxtest</id>
+			<properties>
+				<knetminer.mvnrepo.snapshots.url>https://knetminer.com/artifactory/repository/maven-private-snapshots</knetminer.mvnrepo.snapshots.url>
+			</properties>
+		</profile>
 	</profiles>
 </project>
