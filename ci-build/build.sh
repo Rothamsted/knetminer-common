@@ -175,7 +175,7 @@ if $NEEDS_PUSH; then
   git push --force --tags origin HEAD:"$GIT_BRANCH"
 fi
 
-if [[ -e ./ci-build/build-end.sh ]] then
+if [[ -e ./ci-build/build-end.sh ]]; then
 	echo -e "--- Invking build-end.sh hook ----"
 	. ./ci-build/build-end.sh
 fi
