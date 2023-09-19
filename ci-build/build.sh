@@ -125,19 +125,19 @@ else
 fi
 
 if [[ -e ./ci-build/build-before.sh ]]; then
-	echo -e "--- Invking build-before.sh hook ----"
+	echo -e "--- Invoking build-before.sh hook ----"
 	. ./ci-build/build-before.sh
 fi
 
 if [[ -e ./ci-build/build-body.sh ]]; then
-	echo -e "--- Invking build-body.sh hook ----"
+	echo -e "--- Invoking build-body.sh hook ----"
   . ./ci-build/build-body.sh
 else
   mvn $MAVEN_GOAL --settings ci-build/maven-settings.xml $MAVEN_ARGS
 fi
  
 if [[ -e ./ci-build/build-after.sh ]]; then
-	echo -e "--- Invking build-after.sh hook ----"
+	echo -e "--- Invoking build-after.sh hook ----"
 	. ./ci-build/build-after.sh
 fi
 
@@ -176,7 +176,7 @@ if $NEEDS_PUSH; then
 fi
 
 if [[ -e ./ci-build/build-end.sh ]]; then
-	echo -e "--- Invking build-end.sh hook ----"
+	echo -e "--- Invoking build-end.sh hook ----"
 	. ./ci-build/build-end.sh
 fi
 
