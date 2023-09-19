@@ -124,15 +124,22 @@ else
 	export MAVEN_GOAL='install'
 fi
 
-[[ -e ./ci-build/build-before.sh ]] && . ./ci-build/build-before.sh
+if [[ -e ./ci-build/build-before.sh ]]; then
+	echo -e "--- Invking build-before.sh hook ----"
+	. ./ci-build/build-before.sh
+fi
 
 if [[ -e ./ci-build/build-body.sh ]]; then
+	echo -e "--- Invking build-body.sh hook ----"
   . ./ci-build/build-body.sh
 else
   mvn $MAVEN_GOAL --settings ci-build/maven-settings.xml $MAVEN_ARGS
 fi
  
-[[ -e ./ci-build/build-after.sh ]] && . ./ci-build/build-after.sh
+if [[ -e ./ci-build/build-after.sh ]]; then
+	echo -e "--- Invking build-after.sh hook ----"
+	. ./ci-build/build-after.sh
+fi
 
 if ! $IS_DEPLOY; then
   echo -e "\n\n\tThis is not a deployment build, all ends here. Bye.\n"
@@ -168,6 +175,9 @@ if $NEEDS_PUSH; then
   git push --force --tags origin HEAD:"$GIT_BRANCH"
 fi
 
-[[ -e ./ci-build/build-end.sh ]] && . ./ci-build/build-end.sh
+if [[ -e ./ci-build/build-end.sh ]] then
+	echo -e "--- Invking build-end.sh hook ----"
+	. ./ci-build/build-end.sh
+fi
 
 echo -e "\n\nThe End.\n"
