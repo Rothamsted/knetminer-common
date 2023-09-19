@@ -73,7 +73,7 @@ export GIT_BRANCH=`git branch --show-current`
 # we only do rebuilds. This distinguishes between eg, release branches and experimental branches or 
 # pull requests.
 # 
-export DEPLOY_BRANCHES='master' # A list of branches, separated by spaces
+export DEPLOY_BRANCHES='master main' # A list of branches, separated by spaces
 
 # TODO: review documentation about handlers
 # This can change the variables above, or pre-set some of the variables used below
