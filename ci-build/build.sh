@@ -60,10 +60,17 @@ export MYDIR="`pwd`"
 
 # TODO: document the vars
 export CI_SKIP_TAG='[ci skip]'
+
+# Maven general options. These are (and should be) used for all the Maven commands, even those
+# which aren't strictly about the code rebuild, such as setting a new version
+# 
 # --no-transfer-progress removes annoying 'Downloading...' messages, but also 
 # Upload messages, so it was removed in 2023, local customisations have to add it back
 # for very verbose builds.
 export MAVEN_ARGS='--batch-mode'
+
+# This are arguments that are specifically used in commands like 'mvn install' or deploy
+export MAVEN_BUILD_ARGS="$MAVEN_ARGS --update-snapshots"
 
 # PRs are checked out in detach mode, so they haven't any branch, so checking if this is != master
 # filters them away too
@@ -133,7 +140,7 @@ if [[ -e ./ci-build/build-body.sh ]]; then
 	echo -e "--- Invoking build-body.sh hook ----"
   . ./ci-build/build-body.sh
 else
-  mvn $MAVEN_GOAL --settings ci-build/maven-settings.xml $MAVEN_ARGS
+  mvn $MAVEN_GOAL --settings ci-build/maven-settings.xml $MAVEN_BUILD_ARGS
 fi
  
 if [[ -e ./ci-build/build-after.sh ]]; then
