@@ -23,6 +23,8 @@
 
 		<!-- This is referred by submodules -->
 		<log4j.version>2.18.0</log4j.version>
+		
+		<commons.rng.version>1.5</commons.rng.version>
 
 		<!-- 
 			These are for the neo4j server plug-in. 
@@ -190,8 +192,22 @@
 			<dependency>
 				<groupId>org.apache.commons</groupId>
 				<artifactId>commons-lang3</artifactId>
-				<version>3.12.0</version>
+				<version>3.13.0</version>
 			</dependency>
+
+			<!-- Nice lib to sample collections -->
+			<dependency>
+			  <groupId>org.apache.commons</groupId>
+			  <artifactId>commons-rng-sampling</artifactId>
+			  <version>${commons.rng.version}</version>
+			</dependency>
+			
+			<dependency>
+			  <groupId>org.apache.commons</groupId>
+			  <artifactId>commons-rng-simple</artifactId>
+			  <version>${commons.rng.version}</version>
+			</dependency>
+				
 			
 			<dependency>
 				<groupId>commons-io</groupId>
