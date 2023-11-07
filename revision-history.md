@@ -1,10 +1,20 @@
 # Revision History
 
-*This file was last reviewed on 2023-07-26.* **Please, keep this note updated.**
+*This file was last reviewed on 2023-11-07.* **Please, keep this note updated.**
+
+# 5.0.1-SNAPSHOT
+* Current snapshot.
 
 
-# 4.0.1-SNAPSHOT
+# 5.0
 * Maven plug-ins upgraded.
+* Many dependencies upgraded.
+* More dependencies added: Reactor, Commons RNG.
+
+## Continuos Integration Scripts
+* Adding 'main' to the default list of branches that should be deployed.
+* CI scripts, diagnostic messages added.
+* CI scripts, distinction between `MAVEN_BUILD_ARGS` and `MAVEN_ARGS`.
 
 
 # 4.0
@@ -26,15 +36,18 @@
 * Multiple branches for CI scripts
 * Failure notification to Slack for CI script
 
+
 # 3.0.1
 * JSON-related dependencies added
 * Various dependency upgrades 
+
 
 # 2.0
 * download-page added
 * Eclipse directive to ignore plug-ins added (avoid irrelevant warnings in Eclipse)
 * Java 11 migration and other dependency upgrades
 * Migrated to github actions, generic CI scripts
+
 
 ## 1.0
 * First release
