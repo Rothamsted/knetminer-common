@@ -9,6 +9,14 @@
   
   <name>knetminer-common (common POM for Knetminer projects)</name>
   
+  <url>https://github.com/Rothamsted/knetminer-common</url>
+  
+  <developers>
+		<developer>
+			<name>Marco Brandizi</name>
+		</developer>
+	</developers>
+  
 	<properties>
 		<maven.compiler.source>17</maven.compiler.source>
 		<maven.compiler.target>${maven.compiler.source}</maven.compiler.target>
