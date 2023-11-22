@@ -444,10 +444,10 @@
 			          <name>listener</name>
 			          <value>uk.ac.ebi.utils.test.junit.TestOutputDecorator</value>
 			        </property>
-			       </properties>
-			       <systemProperties>
-			       	<project.build.directory>${project.build.directory}</project.build.directory>
-			       </systemProperties>
+			      </properties>
+			      <systemPropertyVariables>
+			      	<project.build.directory>${project.build.directory}</project.build.directory>
+			      </systemPropertyVariables>
 			    </configuration>
 			    <dependencies>
 			    	<dependency>
