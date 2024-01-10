@@ -1,9 +1,10 @@
 # Revision History
 
-*This file was last reviewed on 2023-11-07.* **Please, keep this note updated.**
+*This file was last reviewed on 2024-01-09.* **Please, keep this note updated.**
 
 # 5.0.1-SNAPSHOT
-* Current snapshot.
+* Surefire, deprecated systemProperties replaced by systemPropertyVariables.
+* Commons RNG removed.
 
 
 # 5.0
