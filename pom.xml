@@ -138,6 +138,13 @@
       	<scope>import</scope>
       	<type>pom</type>
     	</dependency>
+
+			<!-- You might need to include this explicitly, to override transitive old versions -->    	
+			<dependency>
+				<groupId>org.slf4j</groupId>
+				<artifactId>slf4j-api</artifactId>
+				<version>2.0.12</version>
+			</dependency>    	
     	
 		  <!-- You need this if you want to YAML-config log4j2 -->
 			<dependency>
