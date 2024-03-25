@@ -5,7 +5,8 @@ set -e
 #
 function notify_failure
 {
-	if [[ ! "${CI_FAILURE_NOTIFICATION_DISABLED}" == true ]]; then
+  # Useful when debugging
+	if [[ "${CI_FAILURE_NOTIFICATION_DISABLED}" == true ]]; then
 	  printf "\n  CI_FAILURE_NOTIFICATION_DISABLED is set, no failure notification sent"
 	  return 1
 	fi
