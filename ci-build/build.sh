@@ -5,6 +5,11 @@ set -e
 #
 function notify_failure
 {
+	if [[ ! "${CI_FAILURE_NOTIFICATION_DISABLED}" == true ]]; then
+	  printf "\n  CI_FAILURE_NOTIFICATION_DISABLED is set, no failure notification sent"
+	  return 1
+	fi
+	
   run_url="${GITHUB_SERVER_URL}/${GITHUB_REPOSITORY}/actions/runs/${GITHUB_RUN_ID}"
   if [[ -z "$CI_FAIL_MESSAGE" ]]; then
     # Slack uses a reduced version of MD (https://api.slack.com/reference/surfaces/formatting)
@@ -14,7 +19,7 @@ function notify_failure
 
 	if [[ -z "$CI_SLACK_API_NOTIFICATION_URL" ]]; then
 	  printf "\n\nERROR: can't send error notification to empty Slack URL\n\n"
-	  exit 1
+	  return 1
 	fi
 
   curl -X POST -H 'Content-type: application/json' \
