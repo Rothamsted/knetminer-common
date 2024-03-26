@@ -5,9 +5,8 @@ set -e
 #
 function notify_failure
 {
-  # Useful when debugging
-	if [[ "${CI_FAILURE_NOTIFICATION_DISABLED}" == true ]]; then
-	  printf "\n  CI_FAILURE_NOTIFICATION_DISABLED is set, no failure notification sent"
+	if [[ -z "$CI_SLACK_API_NOTIFICATION_URL" ]]; then
+	  printf "\n\nERROR: can't send error notification to empty Slack URL\n\n"
 	  return 1
 	fi
 	
@@ -17,11 +16,6 @@ function notify_failure
     CI_FAIL_MESSAGE="*CI build failure for $GITHUB_REPOSITORY*"
     CI_FAIL_MESSAGE="$CI_FAIL_MESSAGE\n\nSorry, the build for this repo failed, see details <$run_url|here>.\n"
   fi
-
-	if [[ -z "$CI_SLACK_API_NOTIFICATION_URL" ]]; then
-	  printf "\n\nERROR: can't send error notification to empty Slack URL\n\n"
-	  return 1
-	fi
 
   curl -X POST -H 'Content-type: application/json' \
     --data "{ \"text\": \"$CI_FAIL_MESSAGE\" }" \
