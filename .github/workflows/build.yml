@@ -41,9 +41,9 @@ jobs:
         # TODO: Prefix all with CI_
         KNET_REPO_USER: ${{secrets.KNET_REPO_USER}}
         KNET_REPO_PASSWORD: ${{secrets.KNET_REPO_PASSWORD}}
-        GIT_USER: ${{secrets.GIT_USER}}
-        GIT_PASSWORD: ${{github.token}}
-        GIT_USER_EMAIL: ${{secrets.GIT_USER_EMAIL}}
+        GIT_USER: ${{secrets.GIT_USER}} # TODO: github.actor
+        GIT_PASSWORD: ${{github.token}} # TODO: secrets.GITHUB_TOKEN
+        GIT_USER_EMAIL: ${{secrets.GIT_USER_EMAIL}} # TODO: no longer used, remove
         CI_SLACK_API_NOTIFICATION_URL: ${{secrets.CI_SLACK_API_NOTIFICATION_URL}}
         NEW_RELEASE_VER: ${{github.event.inputs.NEW_RELEASE_VER}}
         NEW_SNAPSHOT_VER: ${{github.event.inputs.NEW_SNAPSHOT_VER}}
