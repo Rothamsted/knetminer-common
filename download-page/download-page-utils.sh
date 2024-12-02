@@ -46,7 +46,7 @@ function nexus_asset_search
 	ext="$5"
 	version="$6" # This is the only one that is optional, last versions are fetched if omitted
 	
-	url="https://knetminer.com/artifactory"
+	url="https://knetminer.rothamsted.ac.uk/artifactory"
 	url="$url/service/rest/v1/search/assets?sort=version&direction=desc"
 	
 	url="$url&repository=$repo"
