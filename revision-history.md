@@ -1,8 +1,9 @@
 # Revision History
 
-*This file was last reviewed on 2024-01-09.* **Please, keep this note updated.**
+*This file was last reviewed on 2025-01-07.* **Please, keep this note updated.**
 
 # 5.0.1-SNAPSHOT
+* Migration to new artifactory.knetminer.com Maven repo.
 * Surefire, deprecated systemProperties replaced by systemPropertyVariables.
 * Commons RNG removed.
 
