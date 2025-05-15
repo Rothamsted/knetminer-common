@@ -10,6 +10,8 @@ function notify_failure
 	  return 1
 	fi
 	
+	printf "Notifying the error to Slack\n"
+	
   run_url="${GITHUB_SERVER_URL}/${GITHUB_REPOSITORY}/actions/runs/${GITHUB_RUN_ID}"
   if [[ -z "$CI_FAIL_MESSAGE" ]]; then
     # Slack uses a reduced version of MD (https://api.slack.com/reference/surfaces/formatting)
