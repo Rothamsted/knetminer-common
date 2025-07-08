@@ -1,3 +1,5 @@
+# TODO: delete
+
 function build_local_flavor_begin
 {
 	set_maven_goal
