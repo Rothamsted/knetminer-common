@@ -47,3 +47,7 @@ function run_stage
   run_hook ${stage}_after
 }
 ```
+
+* What next:
+  * continue with `java-maven/build.sh`
+  
