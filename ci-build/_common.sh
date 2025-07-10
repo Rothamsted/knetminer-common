@@ -109,38 +109,38 @@ function is_release_mode
 #
 function precondition_scheduled_build
 {
-	if [[ "$CI_TRIGGERING_EVENT" == 'schedule' ]]; then
+	[[ "$CI_TRIGGERING_EVENT" == 'schedule' ]] || return 
 		
-		nchanges=1
-		[[ -z "$CI_SCHEDULE_PERIOD" ]] \
-		  && echo -e "\n\nWARNING: No CI_SCHEDULE_PERIOD defined, I'll build unconditionally as per schedule\n" \
-		  || nchanges=$(git log --since "$CI_SCHEDULE_PERIOD hours ago" --format=oneline | wc -l)
+	nchanges=1
+	[[ -z "$CI_SCHEDULE_PERIOD" ]] \
+	  && printf "\n\nWARNING: No CI_SCHEDULE_PERIOD defined, I'll build unconditionally as per schedule\n" \
+	  || nchanges=$(git log --since "$CI_SCHEDULE_PERIOD hours ago" --format=oneline | wc -l)
+
+	if [[ $(($nchanges)) -gt 0  ]]; then
+		printf "\nProceeding with periodic build\n\n"
+		return
+	fi
+		
+	cat <<EOT
 	
-		if [[ $(($nchanges)) == 0  ]]; then
-			cat <<EOT
-	
-	
-		This is a cron-triggered build and the code didn't change since the latest build, so we're not rebuilding.
-		This is based on github logs (--since '$CI_SCHEDULE_PERIOD hours ago'). Please, launch a new build manually 
-		if I didn't get it right.
+	This is a cron-triggered build and the code didn't change since the latest build, so we're not rebuilding.
+	This is based on github logs (--since '$CI_SCHEDULE_PERIOD hours ago'). Please, launch a new build manually 
+	if I didn't get it right.
 		
 EOT
-		  exit
-	  else
-	  	echo "Proceeding with periodic build"
-		fi
-	fi	
+		exit
 }
 # precondition_scheduled_build ()
 
-# If !is_release() and the last commit message contains CI_SKIP_TAG, then it exits the build
+
+# If !is_release_mode() and the last commit message contains CI_SKIP_TAG, then it exits the build
 #
 function precondition_skip_commit_tag
 {
-	if ! $(is_release) && [[ `git log -1 --pretty=format:"%s"` =~ "$CI_SKIP_TAG" ]]; then
-		echo -e "\n$CI_SKIP_TAG prefix, ignoring this commit\n"
-		exit
-	fi	
+	is_release_mode || [[ ! `git log -1 --pretty=format:"%s"` =~ "$CI_SKIP_TAG" ]] || return
+	
+	printf "\n$CI_SKIP_TAG prefix, ignoring this commit\n"
+	exit
 }
 
 # The default calls precondition_scheduled_build and precondition_skip_commit_tag and 
@@ -150,10 +150,19 @@ function validate_preconditions
 	precondition_skip_commit_tag
 }
 
-# If CI_NEEDS_PUSH is true, then pushes local commits back to the remote github repo.
-function post_build_push
+
+function stage_git_setup_body
 {
-	$CI_NEEDS_PUSH && return || true
+	git config --global user.name "$GIT_USER"
+	git config --global user.email "$GIT_USER_EMAIL"
+	git config --global "url.https://$GIT_USER:$GIT_PASSWORD@github.com.insteadof" "https://github.com"
+}
+
+
+# If CI_NEEDS_PUSH is true, then pushes local commits back to the remote github repo.
+function stage_remote_git_update_body
+{
+	$CI_NEEDS_PUSH || return
 	
 	echo -e "\n\n\tPushing changes to github\n"
 	
@@ -167,9 +176,9 @@ function run_stage
 {
   stage=$1
 
-  run_hook ${stage}_before
-  ${stage}_body
-  run_hook ${stage}_after
+  run_hook stage_${stage}_before
+  stage_${stage}_body
+  run_hook stage_${stage}_after
 }
 
 

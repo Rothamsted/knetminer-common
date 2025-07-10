@@ -2,17 +2,88 @@
 # TODO: _common.sh
 
 # TODO: comment me!
-# 
-function init_release
+#
+
+function get_maven_goal
 {
-	$is_release && return || true
+	with_log="${1:-false}"
+	
+	if is_deploy_mode; then 
+		! $with_log || printf "\n\n\tMaven Deployment\n" >&2
+		echo deploy
+		return
+	fi
+		
+	! $with_log \
+		&& printf "\n\n\tNot in the main repo, and/or not in the master branch, building only, without deployment\n" >&2
+	echo install
+}
+
+function stage_init_release_body
+{
+	is_release_mode || return
 	 
   mvn versions:set -DnewVersion="${NEW_RELEASE_VER}" -DallowSnapshots=true $MAVEN_ARGS
   # Commit immediately, even if it fails, we will have a chance to give up
   mvn versions:commit $MAVEN_ARGS
 }
 
-function maven_main_build
+function stage_build_body
+{
+	maven_goal="$(get_maven_goal true)"
+	mvn $maven_goal --settings ci-build/maven-settings.xml $MAVEN_BUILD_ARGS
+}
+
+
+function stage_deploy_body
+{
+	if ! is_deploy_mode; then
+	  printf "\n\n\tThis is not a deployment build, deployment operations are skipped.\n"
+	fi
+}
+
+function stage_release_body
+{
+	is_release_mode || return
+
+	echo -e "\n\n\tCommitting ${NEW_RELEASE_VER} to github\n"
+	# --allow-empty is needed cause previous steps might have their own commits, with their
+	# own messages
+	git commit -a --allow-empty -m "Releasing ${NEW_RELEASE_VER}. ${CI_SKIP_TAG}"
+	
+  # TODO: --force was used in Travis, cause it seems to place a tag automatically
+	git tag --force --annotate "${NEW_RELEASE_VER}" -m "Releasing ${NEW_RELEASE_VER}. ${CI_SKIP_TAG}"
+	
+	echo -e "\n\n\tSwitching codebase version to ${NEW_SNAPSHOT_VER}\n"
+	mvn versions:set -DnewVersion="${NEW_SNAPSHOT_VER}" -DallowSnapshots=true $MAVEN_ARGS
+	mvn versions:commit $MAVEN_ARGS
+	
+	git commit -a -m "Switching version to ${NEW_SNAPSHOT_VER}. ${CI_SKIP_TAG}"
+	export NEEDS_PUSH=true	
+}
+
+function stage_custom_setup_body
 {
 	
+}
+
+function stage_custom_close_body
+{
+	
+}
+
+function main
+{
+	install_notification_failure
+	common_setup
+	validate_preconditions
+	
+	run_stafe custom_setup
+	run_stage git_setup
+	run_stage init_release  
+	run_stage build
+	run_stage deploy
+	run_stage release
+	run_stage remote_git_update
+	run_stafe custom_close
 }

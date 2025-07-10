@@ -49,5 +49,7 @@ function run_stage
 ```
 
 * What next:
-  * continue with `java-maven/build.sh`
+  * Move common stages upwards from java-maven, including main()
+  * fix inclusions
+  * test simple Maven build
   
