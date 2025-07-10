@@ -19,7 +19,7 @@ function get_maven_goal
 	echo install
 }
 
-function stage_init_release_body
+function stage_init_release
 {
 	is_release_mode || return
 	 
@@ -28,21 +28,14 @@ function stage_init_release_body
   mvn versions:commit $MAVEN_ARGS
 }
 
-function stage_build_body
+function stage_build
 {
 	maven_goal="$(get_maven_goal true)"
 	mvn $maven_goal --settings ci-build/maven-settings.xml $MAVEN_BUILD_ARGS
 }
 
 
-function stage_deploy_body
-{
-	if ! is_deploy_mode; then
-	  printf "\n\n\tThis is not a deployment build, deployment operations are skipped.\n"
-	fi
-}
-
-function stage_release_body
+function stage_release
 {
 	is_release_mode || return
 
@@ -60,30 +53,4 @@ function stage_release_body
 	
 	git commit -a -m "Switching version to ${NEW_SNAPSHOT_VER}. ${CI_SKIP_TAG}"
 	export NEEDS_PUSH=true	
-}
-
-function stage_custom_setup_body
-{
-	
-}
-
-function stage_custom_close_body
-{
-	
-}
-
-function main
-{
-	install_notification_failure
-	common_setup
-	validate_preconditions
-	
-	run_stafe custom_setup
-	run_stage git_setup
-	run_stage init_release  
-	run_stage build
-	run_stage deploy
-	run_stage release
-	run_stage remote_git_update
-	run_stafe custom_close
 }

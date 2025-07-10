@@ -1,3 +1,79 @@
+function main
+{
+	install_notification_failure
+	common_setup
+	validate_preconditions
+	
+	run_stafe custom_setup
+	run_stage git_setup
+	run_stage init_release  
+	run_stage build
+	run_stage deploy
+	run_stage release
+	run_stage remote_git_update
+	run_stafe custom_close
+}
+
+
+function stage_custom_setup
+{
+	
+}
+
+function stage_init_release
+{
+	# Your _custom implementation should start with this
+	is_release_mode || return
+}
+
+function stage_build
+{
+}
+
+function stage_deploy
+{
+	if ! is_deploy_mode; then
+	  printf "\n\n\tThis is not a deployment build, deployment operations are skipped.\n"
+	fi
+	
+	# Your custom deploy should call this and then do something if is_deploy_mode
+}
+
+function stage_release
+{
+	# Your _custom implementation should start with this	
+	is_release_mode || return
+	
+	# And probably it will need this at the end, if it tagged the repo and/or changed version
+	#export NEEDS_PUSH=true	
+}
+
+function stage_git_setup
+{
+	git config --global user.name "$GIT_USER"
+	git config --global user.email "$GIT_USER_EMAIL"
+	git config --global "url.https://$GIT_USER:$GIT_PASSWORD@github.com.insteadof" "https://github.com"
+}
+
+
+# If CI_NEEDS_PUSH is true, then pushes local commits back to the remote github repo.
+function stage_remote_git_update
+{
+	$CI_NEEDS_PUSH || return
+	
+	echo -e "\n\n\tPushing changes to github\n"
+	
+	# TODO: Is --force still neded? Requires testing, maybe it messes up with the assigned release tag
+  git push --force --tags origin HEAD:"$GIT_BRANCH"
+}
+
+function stage_custom_close
+{
+	
+}
+
+
+
 # Notify build failures using a Slack webhook.
 # Use install_notification_failure() to setup this
 # 
@@ -151,41 +227,14 @@ function validate_preconditions
 }
 
 
-function stage_git_setup_body
-{
-	git config --global user.name "$GIT_USER"
-	git config --global user.email "$GIT_USER_EMAIL"
-	git config --global "url.https://$GIT_USER:$GIT_PASSWORD@github.com.insteadof" "https://github.com"
-}
-
-
-# If CI_NEEDS_PUSH is true, then pushes local commits back to the remote github repo.
-function stage_remote_git_update_body
-{
-	$CI_NEEDS_PUSH || return
-	
-	echo -e "\n\n\tPushing changes to github\n"
-	
-	# TODO: Is --force still neded? Requires testing, maybe it messes up with the assigned release tag
-  git push --force --tags origin HEAD:"$GIT_BRANCH"
-}
-
 # TODO: comment me!
 # 
 function run_stage
 {
-  stage=$1
-
-  run_hook stage_${stage}_before
-  stage_${stage}_body
-  run_hook stage_${stage}_after
+  stage_name=$1
+  
+  declare -F "stage_${stage_name}_custom" >/dev/null \
+  	&& $stage_${stage_name}_custom \
+  	|| $stage_${stage_name}
 }
 
-
-# TODO: comment me!
-#
-function run_hook
-{
-	fun=$1
-	declare -F "$fun" >/dev/null && $fun || return 
-}

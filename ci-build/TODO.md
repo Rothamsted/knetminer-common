@@ -49,7 +49,6 @@ function run_stage
 ```
 
 * What next:
-  * Move common stages upwards from java-maven, including main()
   * fix inclusions
   * test simple Maven build
   
