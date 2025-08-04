@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 set -e
 
-. ./ci-build/_common.sh
+. ./ci-build-v2/_common.sh
 
 # TODO: comment me!
 #
@@ -46,7 +46,7 @@ function stage_init_release
 function stage_build
 {
 	maven_goal="$(get_maven_goal true)"
-	mvn $maven_goal --settings ci-build/java-maven/maven-settings.xml $MAVEN_BUILD_ARGS
+	mvn $maven_goal --settings ci-build-v2/java-maven/maven-settings.xml $MAVEN_BUILD_ARGS
 }
 
 

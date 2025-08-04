@@ -8,7 +8,7 @@ set -e
 
 function install_and_import 
 {
-	. ./ci-build/java-maven/_common.sh	
+	. ./ci-build-v2/java-maven/_common.sh	
 }
 
 install_and_import

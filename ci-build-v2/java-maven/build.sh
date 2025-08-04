@@ -3,7 +3,7 @@ set -e
 
 function install_and_import 
 {
-	# eg, export CI_URL_BASE="https://raw.githubusercontent.com/Rothamsted/knetminer-common/refs/heads/ci-build-v2/ci-build"	
+	# eg, export CI_URL_BASE="https://raw.githubusercontent.com/Rothamsted/knetminer-common/refs/heads/ci-build-v2/ci-build-v2"	
 	if [[ ! -z "$CI_BUILDER_VERSION" ]]; then
 		cat <<EOT
 		
@@ -32,7 +32,7 @@ EOT
 	done
 	
 	# Eventually, these should be here
-	. ./ci-build/java-maven/_common.sh	
+	. ./ci-build-v2/java-maven/_common.sh	
 }
 
 install_and_import
