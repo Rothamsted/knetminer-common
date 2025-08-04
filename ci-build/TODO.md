@@ -50,5 +50,6 @@ function run_stage
 
 * What next:
   * fix inclusions
+  * fix REPO_DIR, it's computed from top-level
   * test simple Maven build
   

@@ -4,30 +4,33 @@ function main
 	common_setup
 	validate_preconditions
 	
-	run_stafe custom_setup
+	run_stage build_setup
 	run_stage git_setup
 	run_stage init_release  
 	run_stage build
 	run_stage deploy
 	run_stage release
 	run_stage remote_git_update
-	run_stafe custom_close
+	run_stage custom_close
 }
 
 
-function stage_custom_setup
+
+function stage_build_setup
 {
-	
+	true
 }
+
 
 function stage_init_release
 {
 	# Your _custom implementation should start with this
-	is_release_mode || return
+	is_release_mode || return 0
 }
 
 function stage_build
 {
+	true
 }
 
 function stage_deploy
@@ -42,7 +45,7 @@ function stage_deploy
 function stage_release
 {
 	# Your _custom implementation should start with this	
-	is_release_mode || return
+	is_release_mode || return 0
 	
 	# And probably it will need this at the end, if it tagged the repo and/or changed version
 	#export NEEDS_PUSH=true	
@@ -59,9 +62,9 @@ function stage_git_setup
 # If CI_NEEDS_PUSH is true, then pushes local commits back to the remote github repo.
 function stage_remote_git_update
 {
-	$CI_NEEDS_PUSH || return
+	$CI_NEEDS_PUSH || return 0
 	
-	echo -e "\n\n\tPushing changes to github\n"
+	printf "\n\n\tPushing changes to github\n"
 	
 	# TODO: Is --force still neded? Requires testing, maybe it messes up with the assigned release tag
   git push --force --tags origin HEAD:"$GIT_BRANCH"
@@ -69,7 +72,7 @@ function stage_remote_git_update
 
 function stage_custom_close
 {
-	
+	true
 }
 
 
@@ -107,8 +110,11 @@ function notify_failure
 function install_notification_failure
 {
 	# Needed to send notifications via Slack, but normally it's there by default
+	printf "== Installing additional Ubuntu packages\n" 
 	apt-get -y update
-	apt-get -y curl
+	apt-get -y install curl
+	
+	printf "== Installing failure handler\n" 
 	trap notify_failure ERR	
 }
 
@@ -117,12 +123,18 @@ function install_notification_failure
 #
 function common_setup
 {
-	cd "$(dirname "$0")"
+	printf "== Common setup\n"
+	mypath="$(realpath "${BASH_SOURCE[0]}")"
+	mydir="$(dirname "$mypath")"	
+	
+	cd "$mydir"
 	cd ..
-	export MYDIR="$(pwd)"	
+	export PROJECT_HOME="$(pwd)"	
 
 	# Used in TODO:	
 	export CI_SKIP_TAG='[ci skip]'
+	export CI_SKIP_TAG='[DISABLED TODO: DELETE ME]'
+
 	
 	# PRs are checked out in detach mode, so they haven't any branch, so checking if this is != master
 	# filters them away too
@@ -132,7 +144,8 @@ function common_setup
 	# we only do rebuilds. This distinguishes between eg, release branches and experimental branches or 
 	# pull requests.
 	# 
-	export CI_DEPLOY_BRANCHES='master main' # A list of branches, separated by spaces
+	[[ ! -z "$CI_DEPLOY_BRANCHES" ]] \
+		|| export CI_DEPLOY_BRANCHES='master main' # A list of branches, separated by spaces
 	
 	# This is used in TODO, if some previous stage set it to true, then it's known that
 	# we need to push local changes back to the remote git repo.
@@ -168,10 +181,10 @@ function is_release_mode
 
 	if $is_release; then
 	  if ! $(is_deploy_mode); then
-			echo -e "\n\nERROR: Can't do a release for a non-deploy branch, check DEPLOY_BRANCHES or the running branch\n"
+			printf "\n\nERROR: Can't do a release for a non-deploy branch, check DEPLOY_BRANCHES or the running branch\n"
 			exit 1
 		fi
-		echo -e "\n\n\tReleasing ${CI_NEW_RELEASE_VER}, new snapshot will be: ${CI_NEW_RELEASE_VER}\n" 
+		printf "\n\n\tReleasing ${CI_NEW_RELEASE_VER}, new snapshot will be: ${CI_NEW_RELEASE_VER}\n" 
 	fi 
 }
 
@@ -185,7 +198,9 @@ function is_release_mode
 #
 function precondition_scheduled_build
 {
-	[[ "$CI_TRIGGERING_EVENT" == 'schedule' ]] || return 
+	printf "== Checking scheduled event settings\n"
+	
+	[[ "$CI_TRIGGERING_EVENT" == 'schedule' ]] || return 0 
 		
 	nchanges=1
 	[[ -z "$CI_SCHEDULE_PERIOD" ]] \
@@ -194,7 +209,7 @@ function precondition_scheduled_build
 
 	if [[ $(($nchanges)) -gt 0  ]]; then
 		printf "\nProceeding with periodic build\n\n"
-		return
+		return 0
 	fi
 		
 	cat <<EOT
@@ -213,9 +228,13 @@ EOT
 #
 function precondition_skip_commit_tag
 {
-	is_release_mode || [[ ! `git log -1 --pretty=format:"%s"` =~ "$CI_SKIP_TAG" ]] || return
+	printf "== Checking skip commit tag\n"
 	
-	printf "\n$CI_SKIP_TAG prefix, ignoring this commit\n"
+	if is_release_mode || [[ ! `git log -1 --pretty=format:"%s"` =~ "$CI_SKIP_TAG" ]]; then
+		return 0
+	fi
+	
+	printf "\n$CI_SKIP_TAG prefix in the last commit message, not building upon this commit\n"
 	exit
 }
 
@@ -233,8 +252,12 @@ function run_stage
 {
   stage_name=$1
   
-  declare -F "stage_${stage_name}_custom" >/dev/null \
-  	&& $stage_${stage_name}_custom \
-  	|| $stage_${stage_name}
-}
+  stage_fun="stage_${stage_name}"
+  
+  declare -F "${stage_fun}_custom" >/dev/null && stage_fun="${stage_fun}_custom"
+  
+  printf "\n\n==== Stage: ${stage_fun}\n\n"
+  ${stage_fun}
+  printf "\n==== /end:Stage: ${stage_fun}\n\n"
 
+}
