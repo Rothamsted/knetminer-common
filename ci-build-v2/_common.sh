@@ -111,8 +111,8 @@ function install_notification_failure
 {
 	# Needed to send notifications via Slack, but normally it's there by default
 	printf "== Installing additional Ubuntu packages\n" 
-	apt-get -y update
-	apt-get -y install curl
+	sudo apt -y update
+	sudo apt -y install curl
 	
 	printf "== Installing failure handler\n" 
 	trap notify_failure ERR	
