@@ -22,9 +22,9 @@ function get_maven_goal
 }
 
 function stage_build_setup
-{
+{	
 	# When using the ACT utility, this isn't installed by default
-	if $CI_ACT_TOOL; then
+	if [[ "${CI_IS_ACT_TOOL}" == 'true' ]]; then
 		printf "== Installing Maven (ACT Mode)\n"
 		apt update
 		apt install -y maven
