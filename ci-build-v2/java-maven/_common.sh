@@ -66,7 +66,7 @@ function stage_release
 	mvn versions:set -DnewVersion="${CI_NEW_SNAPSHOT_VER}" -DallowSnapshots=true $MAVEN_ARGS
 	mvn versions:commit $MAVEN_ARGS
 	
-	git commit -a -m "Switching version to ${CI_NEW_SNAPSHOT_VER}. ${CI_SKIP_TAG}"
+	git commit -a --allow-empty -m "Switching version to ${CI_NEW_SNAPSHOT_VER}. ${CI_SKIP_TAG}"
 	export CI_NEEDS_PUSH=true	
 }
 
