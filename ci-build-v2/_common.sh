@@ -61,9 +61,7 @@ function stage_git_setup
 
 # If CI_NEEDS_PUSH is true, then pushes local commits back to the remote github repo.
 function stage_remote_git_update
-{
-	printf "==== CI_NEEDS_PUSH: %s\n" "$CI_NEEDS_PUSH"
-	
+{	
 	$CI_NEEDS_PUSH || return 0
 	
 	printf "== Pushing changes to github\n"
