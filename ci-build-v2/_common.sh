@@ -187,7 +187,7 @@ function is_release_mode
 			exit 1
 		fi
 		
-		!with_log \
+		! $with_log \
 			|| printf "== Releasing '%s', new snapshot will be: '%s'\n" \
 			   "${CI_NEW_RELEASE_VER}" "${CI_NEW_SNAPSHOT_VER}"
 	fi
