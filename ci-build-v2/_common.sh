@@ -67,7 +67,7 @@ function stage_remote_git_update
 	printf "== Pushing changes to github\n"
 	
 	# TODO: Is --force still neded? Requires testing, maybe it messes up with the assigned release tag
-  git push --force --tags origin HEAD:"$GIT_BRANCH"
+  git push --force --tags origin HEAD:"$CI_GIT_BRANCH"
 }
 
 function stage_custom_close
@@ -157,7 +157,7 @@ function common_setup
 # Usually, deployment means rebuilding the project locally and updating something remotely
 # (eg a binary repo, a test server).
 # 
-# The default implementation of this function just checks " $DEPLOY_BRANCHES " =~ " $GIT_BRANCH "
+# The default implementation of this function just checks " $DEPLOY_BRANCHES " =~ " $CI_GIT_BRANCH "
 # 
 function is_deploy_mode
 {
