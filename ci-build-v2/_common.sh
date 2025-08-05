@@ -11,7 +11,7 @@ function main
 	run_stage deploy
 	run_stage release
 	run_stage remote_git_update
-	run_stage custom_close
+	run_stage close
 }
 
 
@@ -24,7 +24,7 @@ function stage_build_setup
 
 function stage_init_release
 {
-	# Your _custom implementation should start with this
+	# Your _local implementation should start with this
 	is_release_mode true || return 0
 }
 
@@ -44,7 +44,7 @@ function stage_deploy
 
 function stage_release
 {
-	# Your _custom implementation should start with this	
+	# Your _local implementation should start with this	
 	is_release_mode || return 0
 	
 	# And probably it will need this at the end, if it tagged the repo and/or changed version
@@ -70,7 +70,7 @@ function stage_remote_git_update
   git push --force --tags origin HEAD:"$CI_GIT_BRANCH"
 }
 
-function stage_custom_close
+function stage_close
 {
 	true
 }
@@ -261,7 +261,7 @@ function run_stage
   
   stage_fun="stage_${stage_name}"
   
-  declare -F "${stage_fun}_custom" >/dev/null && stage_fun="${stage_fun}_custom"
+  declare -F "${stage_fun}_local" >/dev/null && stage_fun="${stage_fun}_local"
   
   printf "\n\n==== Stage: ${stage_fun}\n\n"
   ${stage_fun}

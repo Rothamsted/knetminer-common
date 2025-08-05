@@ -47,6 +47,8 @@ jobs:
         CI_SLACK_API_NOTIFICATION_URL: ${{secrets.CI_SLACK_API_NOTIFICATION_URL}}
         CI_NEW_RELEASE_VER: ${{github.event.inputs.NEW_RELEASE_VER}}
         CI_NEW_SNAPSHOT_VER: ${{github.event.inputs.NEW_SNAPSHOT_VER}}
+        # You might need it to let the CI scripts decide upon schedule vs push
+        CI_TRIGGERING_EVENT: ${{github.event_name}}
         # This is only set when using the act tool
         CI_IS_ACT_TOOL: ${{ secrets.CI_IS_ACT_TOOL }}
         # This also can be passed from act CLI
