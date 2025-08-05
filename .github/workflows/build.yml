@@ -41,7 +41,7 @@ jobs:
         # TODO: Prefix all with CI_
         KNET_REPO_USER: ${{secrets.KNET_REPO_USER}}
         KNET_REPO_PASSWORD: ${{secrets.KNET_REPO_PASSWORD}}
-        GIT_USER: ${{secrets.actor}}
+        GIT_USER: ${{github.actor}}
         GIT_PASSWORD: ${{github.GITHUB_TOKEN}}
         GIT_USER_EMAIL: ${{secrets.GIT_USER_EMAIL}}
         CI_SLACK_API_NOTIFICATION_URL: ${{secrets.CI_SLACK_API_NOTIFICATION_URL}}
@@ -49,5 +49,7 @@ jobs:
         CI_NEW_SNAPSHOT_VER: ${{github.event.inputs.NEW_SNAPSHOT_VER}}
         # This is only set when using the act tool
         CI_IS_ACT_TOOL: ${{ secrets.CI_IS_ACT_TOOL }}
+        # This also can be passed from act CLI
+        CI_DEPLOY_BRANCHES: ${{ secrets.CI_DEPLOY_BRANCHES }}
         
       run: ci-build-v2/java-maven/build-self.sh

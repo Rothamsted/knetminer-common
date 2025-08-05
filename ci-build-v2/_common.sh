@@ -62,9 +62,11 @@ function stage_git_setup
 # If CI_NEEDS_PUSH is true, then pushes local commits back to the remote github repo.
 function stage_remote_git_update
 {
+	printf "==== CI_NEEDS_PUSH: %s\n" "$CI_NEEDS_PUSH"
+	
 	$CI_NEEDS_PUSH || return 0
 	
-	printf "\n\n\tPushing changes to github\n"
+	printf "== Pushing changes to github\n"
 	
 	# TODO: Is --force still neded? Requires testing, maybe it messes up with the assigned release tag
   git push --force --tags origin HEAD:"$GIT_BRANCH"
@@ -133,7 +135,7 @@ function common_setup
 
 	# Used in TODO:	
 	export CI_SKIP_TAG='[ci skip]'
-	export CI_SKIP_TAG='[DISABLED TODO: DELETE ME]'
+	# export CI_SKIP_TAG='[DISABLED]' # Used for debugging
 
 	
 	# PRs are checked out in detach mode, so they haven't any branch, so checking if this is != master
@@ -145,10 +147,10 @@ function common_setup
 	# pull requests.
 	# 
 	[[ ! -z "$CI_DEPLOY_BRANCHES" ]] \
-		|| export CI_DEPLOY_BRANCHES='master main' # A list of branches, separated by spaces
+		|| export CI_DEPLOY_BRANCHES='master main ci-build-v2' # A list of branches, separated by spaces
 	
-	# This is used in TODO, if some previous stage set it to true, then it's known that
-	# we need to push local changes back to the remote git repo.
+	# This is used in stages like remote_git_update(), if some previous stage set it to true, 
+	# then it's known that we need to push local changes back to the remote git repo.
 	export CI_NEEDS_PUSH=false
 }
 
@@ -184,8 +186,10 @@ function is_release_mode
 			printf "\n\nERROR: Can't do a release for a non-deploy branch, check DEPLOY_BRANCHES or the running branch\n"
 			exit 1
 		fi
-		printf "\n\n\tReleasing ${CI_NEW_RELEASE_VER}, new snapshot will be: ${CI_NEW_RELEASE_VER}\n" 
-	fi 
+		printf "\n\n\tReleasing ${CI_NEW_RELEASE_VER}, new snapshot will be: ${CI_NEW_SNAPSHOT_VER}\n" 
+	fi
+	
+	$is_release
 }
 
 

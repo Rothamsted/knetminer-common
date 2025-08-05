@@ -52,7 +52,7 @@ function stage_build
 
 function stage_release
 {
-	! is_release_mode || return 0
+	is_release_mode || return 0
 	
 	printf "\n\n\tCommitting ${CI_NEW_RELEASE_VER} to github\n"
 	# --allow-empty is needed cause previous steps might have their own commits, with their
