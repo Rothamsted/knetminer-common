@@ -98,9 +98,9 @@ function notify_failure
     CI_FAIL_MESSAGE="$CI_FAIL_MESSAGE\n\nSorry, the build for this repo failed, see details <$run_url|here>.\n"
   fi
 
-  curl -X POST -H 'Content-type: application/json' \
-    --data "{ \"text\": \"$CI_FAIL_MESSAGE\" }" \
-    "$CI_SLACK_API_NOTIFICATION_URL"
+  curl --fail-with-body -X POST -H 'Content-type: application/json' \
+       --data "{ \"text\": \"$CI_FAIL_MESSAGE\" }" \
+       "$CI_SLACK_API_NOTIFICATION_URL"
 }
 
 # Install notify_failure() by means of the 'trap' command.
@@ -265,6 +265,6 @@ function run_stage
   
   printf "\n\n==== Stage: ${stage_fun}\n\n"
   ${stage_fun}
-  printf "\n==== /end:Stage: ${stage_fun}\n\n"
+  printf "\n==== /end Stage: ${stage_fun}\n\n"
 
 }
