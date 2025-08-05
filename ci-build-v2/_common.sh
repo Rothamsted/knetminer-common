@@ -25,7 +25,7 @@ function stage_build_setup
 function stage_init_release
 {
 	# Your _custom implementation should start with this
-	is_release_mode || return 0
+	is_release_mode true || return 0
 }
 
 function stage_build
@@ -176,6 +176,8 @@ function is_deploy_mode
 # 
 function is_release_mode
 {
+	with_log="${1:-false}"
+
 	[[ ! -z "${CI_NEW_RELEASE_VER}" ]] && [[ ! -z "${CI_NEW_SNAPSHOT_VER}" ]] \
   	&& is_release=true || is_release=false
 
@@ -184,7 +186,10 @@ function is_release_mode
 			printf "\n\nERROR: Can't do a release for a non-deploy branch, check DEPLOY_BRANCHES or the running branch\n"
 			exit 1
 		fi
-		printf "\n\n\tReleasing ${CI_NEW_RELEASE_VER}, new snapshot will be: ${CI_NEW_SNAPSHOT_VER}\n" 
+		
+		!with_log \
+			|| printf "== Releasing '%s', new snapshot will be: '%s'\n" \
+			   "${CI_NEW_RELEASE_VER}" "${CI_NEW_SNAPSHOT_VER}"
 	fi
 	
 	$is_release

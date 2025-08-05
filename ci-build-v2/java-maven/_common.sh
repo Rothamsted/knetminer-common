@@ -35,7 +35,7 @@ function stage_build_setup
 
 function stage_init_release
 {
-	! is_release_mode || return 0
+	is_release_mode true || return 0
 	 
 	printf "== Preparing Maven for release '%s'" "${CI_NEW_RELEASE_VER}"
   mvn versions:set -DnewVersion="${CI_NEW_RELEASE_VER}" -DallowSnapshots=true $MAVEN_ARGS
