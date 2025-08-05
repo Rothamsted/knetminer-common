@@ -30,7 +30,7 @@ function install_and_import
 	# doing it in your own definition file and then importing it after the original ones, like
 	# it's shown here.
 	# This is not necessary if you only have stage_xxx_local() functions (or only your own new
-	# functions)
+	# functions).
 	#
 	# . ./ci-build-v2/java-maven/_common-local.sh
 }
