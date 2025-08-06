@@ -42,14 +42,50 @@ function stage_deploy
 	# Your custom deploy should call this and then do something if is_deploy_mode
 }
 
+# TODO: comment me!
+#
+# Uses git_commit_release, git_tag_release, git_commit_new_snapshot to mark releasing-related 
+# changes in the current repo.
+#
 function stage_release
 {
+	# Likely, your own flavour will be like this:
+	
 	# Your _local implementation should start with this	
 	is_release_mode || return 0
 	
-	# And probably it will need this at the end, if it tagged the repo and/or changed version
-	#export NEEDS_PUSH=true	
+	# DO release-related changes (change version, test, prepare binaries, etc)
+	
+	# release_commit_and_tag # commit them and tag with new version tag (sets CI_NEEDS_PUSH)
+	
+	# DO more changes to prepare the next snapshot/dev version
+	
+	# release_commit_new_snapshot # And commit these too (sets CI_NEEDS_PUSH)
 }
+
+
+function release_commit_and_tag
+{
+	printf "== Committing/tagging ${CI_NEW_RELEASE_VER} to git\n"
+	
+	# --allow-empty is needed cause previous steps might have their own commits, with their
+	# own messages
+	git commit -a --allow-empty -m "Releasing ${CI_NEW_RELEASE_VER}. ${CI_SKIP_TAG}"
+	
+  # TODO: --force was used in Travis, cause it seems to place a tag automatically
+	git tag --force --annotate "${CI_NEW_RELEASE_VER}" -m "Releasing ${CI_NEW_RELEASE_VER}. ${CI_SKIP_TAG}"
+
+	export CI_NEEDS_PUSH=true	
+}
+
+function release_commit_new_snapshot
+{
+	printf "== Committing ${CI_NEW_SNAPSHOT_VER} to git\n"
+	
+	git commit -a --allow-empty -m "Switching version to ${CI_NEW_SNAPSHOT_VER}. ${CI_SKIP_TAG}"
+	export CI_NEEDS_PUSH=true
+}
+
 
 function stage_git_setup
 {

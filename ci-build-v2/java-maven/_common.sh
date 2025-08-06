@@ -53,20 +53,14 @@ function stage_build
 function stage_release
 {
 	is_release_mode || return 0
-	
-	printf "\n\n\tCommitting ${CI_NEW_RELEASE_VER} to github\n"
-	# --allow-empty is needed cause previous steps might have their own commits, with their
-	# own messages
-	git commit -a --allow-empty -m "Releasing ${CI_NEW_RELEASE_VER}. ${CI_SKIP_TAG}"
-	
-  # TODO: --force was used in Travis, cause it seems to place a tag automatically
-	git tag --force --annotate "${CI_NEW_RELEASE_VER}" -m "Releasing ${CI_NEW_RELEASE_VER}. ${CI_SKIP_TAG}"
-	
-	printf "\n\n\tSwitching codebase version to ${CI_NEW_SNAPSHOT_VER}\n"
+		
+	release_commit_and_tag
+		
+	printf "== Switching codebase version to ${CI_NEW_SNAPSHOT_VER}\n"
 	mvn versions:set -DnewVersion="${CI_NEW_SNAPSHOT_VER}" -DallowSnapshots=true $MAVEN_ARGS
 	mvn versions:commit $MAVEN_ARGS
-	
-	git commit -a --allow-empty -m "Switching version to ${CI_NEW_SNAPSHOT_VER}. ${CI_SKIP_TAG}"
-	export CI_NEEDS_PUSH=true	
+
+	release_commit_new_snapshot
+	# CI_NEEDS_PUSH was set	
 }
 
