@@ -4,11 +4,12 @@ set -e
 function install_and_import 
 {
 	url_base="$1"
-
 	printf "\n== Downloading from URL base '%s'\n\n" "$url_base"
 
+	file_local_paths=("_common.sh" "java-maven/_common.sh" "java-maven/maven-settings.xml")
+
 	# Relative to the <git root>/ci-build-v2
-	for file_local_path in "_common.sh" "java-maven/_common.sh" "java-maven/maven-settings.xml"
+	for file_local_path in "${file_local_paths[@]}"
 	do
 		file_local_path="ci-build-v2/$file_local_path"
 		[[ ! -e "$file_local_path" ]] || continue;
