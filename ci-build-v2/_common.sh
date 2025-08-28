@@ -171,6 +171,30 @@ function common_setup
 	export CI_SKIP_TAG='[ci skip]'
 	# export CI_SKIP_TAG='[DISABLED]' # Used for debugging
 
+	# We support the act tool, which requires some tricks
+	if [[ $CI_IS_ACT_TOOL == 'true' ]]; then
+		if [[ -z "$ACT_GIT_PASSWORD" ]]; then
+			cat <<EOT
+  
+WARNING: CI_IS_ACT_TOOL is set and ACT_GIT_PASSWORD is empty.
+  
+You CAN'T get GIT_PASSWORD from:
+  
+  GIT_PASSWORD: \${{github.GITHUB_TOKEN}}
+
+you can do this instead:
+
+  ACT_GIT_PASSWORD: ${{secrets.GITHUB_PAT}}
+
+and define GITHUB_PAT in the secrets file you pass to the act tool.
+
+Continuing without a git password.
+
+EOT
+  
+		fi 
+		GIT_PASSWORD="$ACT_GIT_PASSWORD"
+	fi
 	
 	# PRs are checked out in detach mode, so they haven't any branch, so checking if this is != master
 	# filters them away too
