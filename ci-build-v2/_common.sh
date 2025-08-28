@@ -182,7 +182,7 @@ You CAN'T get GIT_PASSWORD from:
   
   GIT_PASSWORD: \${{github.GITHUB_TOKEN}}
 
-you can do this instead:
+you can add this to the above definition in the env section of your Action workflow:
 
   ACT_GIT_PASSWORD: ${{secrets.GITHUB_PAT}}
 
