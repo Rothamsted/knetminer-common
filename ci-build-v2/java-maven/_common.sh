@@ -1,13 +1,18 @@
 #!/usr/bin/env bash
+#
+# The common stage implementations for projects based on Java and Maven.
+# 
+
 set -e
 
+# A flavour starts with importing the core functions
 . ./ci-build-v2/_common.sh
 
-# TODO: comment me!
+# Establishes the Maven goal to use in stage_build(), based on is_deploy_mode()
 #
-
 function get_maven_goal
 {
+	# If true, notifies which kind of maven goal the build is going to use
 	with_log="${1:-false}"
 	
 	if is_deploy_mode; then 
@@ -24,6 +29,7 @@ function get_maven_goal
 function stage_build_setup
 {	
 	# When using the ACT utility, this isn't installed by default
+	# 
 	if [[ "${CI_IS_ACT_TOOL}" == 'true' ]]; then
 		printf "== Installing Maven (ACT Mode)\n"
 		apt update
@@ -43,6 +49,11 @@ function stage_init_release
   mvn versions:commit $MAVEN_ARGS
 }
 
+# Calls Maven with the goal established by get_maven_goal()
+# It also uses ci-build-v2/java-maven/maven-settings.xml, which should contain the 
+# credentials and coordinates for the deployment repository. See the default version
+# of this file for details.
+#
 function stage_build
 {
 	maven_goal="$(get_maven_goal true)"
@@ -50,6 +61,7 @@ function stage_build
 }
 
 
+# Manages a Maven release by means of the 'versions' Maven plug-in.
 function stage_release
 {
 	is_release_mode || return 0
@@ -61,6 +73,6 @@ function stage_release
 	mvn versions:commit $MAVEN_ARGS
 
 	release_commit_new_snapshot
-	# CI_NEEDS_PUSH was set	
+	# CI_NEEDS_PUSH was already set	by release_commit_and_tag()
 }
 

@@ -1,9 +1,25 @@
+
+# The Common Workflow
+# 
+# See README.md for an overview of this project.
+#
 function main
 {
 	install_notification_failure
 	common_setup
 	validate_preconditions
 	
+	# As mentioned in README.md, a workflow is mainly a sequence of stages. Each 
+	# stage is run through the run_stage wrapper, so that you can override stages with
+	# _local implementations.
+	#
+	# For example, build_setup() is a function, which can be possibly overridden/extended
+	# by defining a stage_build_setup_local() function.
+	#
+	# In the hereby file, most stages are empty placholders, their actual non-local 
+	# implementations are provided in $flavour/_common.sh files, and depend on a
+	# flavour language and build system (eg, java-maven, python-poetry, etc).
+	#
 	run_stage build_setup
 	run_stage git_setup
 	run_stage init_release  
@@ -14,7 +30,16 @@ function main
 	run_stage close
 }
 
+## Default stages
 
+# Note that you can't have an empty function body in bash, so we use 'true' instead.
+# Also note that, since we usually have set -e at the top of a concrete CI script, a
+# stage must always return 0 unless it actually needs to signal an error.
+# For instance, this is not going to work as last command in a stage and when is_debug 
+# is false, because in that case, you won't have a 0 return code:
+# 
+# $is_debug && print "Debug message"
+#
 
 function stage_build_setup
 {
@@ -26,6 +51,9 @@ function stage_init_release
 {
 	# Your _local implementation should start with this
 	is_release_mode true || return 0
+
+	# And continue with what you need to do to prepare a release from the current
+	# git branch.
 }
 
 function stage_build
@@ -42,10 +70,12 @@ function stage_deploy
 	# Your custom deploy should call this and then do something if is_deploy_mode
 }
 
-# TODO: comment me!
+# When the build is in release mode (see is_release_mode()), this stage should do the
+# operations needed to produce a release. For instance, it might tag the git repo, it might
+# use the 'gh release' command, it might trigger a script in a production server.
 #
-# Uses git_commit_release, git_tag_release, git_commit_new_snapshot to mark releasing-related 
-# changes in the current repo.
+# This should use `git_commit_release()`, `git_tag_release()`, `git_commit_new_snapshot()` 
+# to mark releasing-related changes in the current repo.
 #
 function stage_release
 {
@@ -64,6 +94,14 @@ function stage_release
 }
 
 
+# Updates the git log with a release marking commit and creates a release tag.
+# It also sets CI_NEEDS_PUSH to true, so you don't need to do it in other stages.
+#
+# Scripts like this are based on the environment variable CI_NEW_RELEASE_VER, which
+# is usually a GHA parameter, set upon manual execution of a build workflow, which usually
+# has the CI_NEW_SNAPSHOT_VER parameter too, to allow switching to the next snapshot version
+# (in release_commit_new_snapshot()).
+#
 function release_commit_and_tag
 {
 	printf "== Committing/tagging ${CI_NEW_RELEASE_VER} to git\n"
@@ -78,6 +116,15 @@ function release_commit_and_tag
 	export CI_NEEDS_PUSH=true	
 }
 
+
+# This is to be called after having switched the codebase to a new snapshot version
+# While snapshot versions aren't used in all languages, the concept is a snapshot is 
+# the current working version, which hasn't a release yet. For instance, in a Python/PIP
+# project, you might want to switch to 1.0.1 or 1.0.1-dev after releasing 1.0.0.
+# 
+# This is based on the environment variable CI_NEW_SNAPSHOT_VER, which is usually a GHA
+# parameter, set upon manual execution of a build workflow, together with CI_NEW_RELEASE_VER.
+#
 function release_commit_new_snapshot
 {
 	printf "== Committing ${CI_NEW_SNAPSHOT_VER} to git\n"
@@ -87,8 +134,11 @@ function release_commit_new_snapshot
 }
 
 
+# Configures the running git with variables that usually come from github actions secrets.
+# 
 function stage_git_setup
 {
+	printf "== Setting git account and credentials\n"
 	git config --global user.name "$GIT_USER"
 	git config --global user.email "$GIT_USER_EMAIL"
 	git config --global "url.https://$GIT_USER:$GIT_PASSWORD@github.com.insteadof" "https://github.com"
@@ -96,6 +146,10 @@ function stage_git_setup
 
 
 # If CI_NEEDS_PUSH is true, then pushes local commits back to the remote github repo.
+#
+# This is run at the end of a build workflow, after stages like 'release', to push local changes
+# that one or more stages produced back to the remote git repo.
+# 
 function stage_remote_git_update
 {	
 	$CI_NEEDS_PUSH || return 0
@@ -106,6 +160,11 @@ function stage_remote_git_update
   git push --force --tags origin HEAD:"$CI_GIT_BRANCH"
 }
 
+
+# Run at the very end of a build workflow, allows for final operations, such as cleanups, 
+# Triggering server updates, notifications.
+# This default does nothing.
+#
 function stage_close
 {
 	true
@@ -141,7 +200,7 @@ function notify_failure
 
 # Install notify_failure() by means of the 'trap' command.
 #
-# This also prepaers the environment for the handler to work
+# This also prepares the environment for the handler to work
 #
 function install_notification_failure
 {
@@ -210,7 +269,9 @@ EOT
 	# This is used in stages like remote_git_update(), if some previous stage set it to true, 
 	# then it's known that we need to push local changes back to the remote git repo.
 	export CI_NEEDS_PUSH=false
-}
+
+} # common_setup ()
+
 
 # Tells if the CI build should work in deploy mode or not
 # 
@@ -223,6 +284,7 @@ function is_deploy_mode
 {
 	[[ " $CI_DEPLOY_BRANCHES " =~ " $CI_GIT_BRANCH " ]] 
 }
+
 
 # Checks if we're in release mode or not.
 #
@@ -256,9 +318,12 @@ function is_release_mode
 }
 
 
+# Manages GHA builds based on scheduled events. It checks if there have been changes
+# since the last build, and if not, it gives up the current build.
+# 
 # Many cron-based CI triggers don't consider whether there have been changes or not since the last 
 # build, so this function can be used to check how many commits there have been in the past 
-# CI_SCHEDULE_PERIOD hours. The function will exit the build if that's the case.
+# CI_SCHEDULE_PERIOD hours. This function will exit the build if that's the case.
 #  
 # The approach isn't perfect (eg, last build could have failed due to network problems,
 # not necessarily the code itself), but good enough in most cases. 
@@ -292,6 +357,9 @@ EOT
 
 
 # If !is_release_mode() and the last commit message contains CI_SKIP_TAG, then it exits the build
+# 
+# We check this just in case, nowadays github supports [ci skip] and when a commit has this 
+# snippet, no build is triggered at all.
 #
 function precondition_skip_commit_tag
 {
@@ -305,7 +373,9 @@ function precondition_skip_commit_tag
 	exit
 }
 
-# The default calls precondition_scheduled_build and precondition_skip_commit_tag and 
+# Does all the build pre-condition validations. The default calls precondition_scheduled_build() 
+# and precondition_skip_commit_tag().
+#
 function validate_preconditions
 {
 	precondition_scheduled_build
@@ -313,7 +383,9 @@ function validate_preconditions
 }
 
 
-# TODO: comment me!
+# As said above, this run a stage named like name=$1, by calling stage_$name_local(), 
+# if it exists, stage_${name}() otherwise. As explained stage_${name}() is usually
+# implemented by a particular flavour of this commons scripts project.
 # 
 function run_stage
 {
