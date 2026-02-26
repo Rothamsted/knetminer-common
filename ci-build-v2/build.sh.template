@@ -1,4 +1,15 @@
 #!/usr/bin/env bash
+
+# A template foe the build.sh script, which a dependant project should use as bootstrap.
+# The file should do this:
+# - Download what's needed from this repository (see install_and_import() below), including files from the 
+#   the flavour you target (eg, java-maven/, python-poetry/)
+# - Source the _common.sh file for your flavour (eg, java-maven/_common.sh), which will import the 
+#   framework general functions and then override/extend them with flavour-specific code
+# - If it exists, source the _common-local.sh file for your flavour (eg, java-maven/_common-local.sh), which 
+#   can be used for further project-specific customizations.
+# - Finally, call `main`, which trigger the build, using flavour-specific and local implementations
+#
 set -e
 
 function install_and_import 
