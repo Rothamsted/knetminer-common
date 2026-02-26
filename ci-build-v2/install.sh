@@ -8,7 +8,7 @@ set -e
 # Flavour-specific installers, they all use install()
 # 
 
-function install_java
+function install_java_maven
 {
 	url_base="$1"
 	install "java-maven" "$url_base" "_common.sh" "java-maven/_common.sh" "java-maven/maven-settings.xml"
@@ -58,4 +58,8 @@ function install
 url_base="$1"
 flavour="$2"
 
-install_$flavour "$url_base"
+# Replace '-' with '_', so we can allow flavours with the same name as the subdirectories
+# (Bash doesn't like '-')
+flavour="${flavour//-/_}"
+
+install_$flavour "$url_base" $flavour
