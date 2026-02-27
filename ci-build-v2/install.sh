@@ -45,7 +45,7 @@ function install
 		file_path="$(realpath "${file_local_path}")"		
 		dir_path="$(dirname "${file_path}")"
 		
-		printf "= Downloading '%s' to '%s'" "$url" "${file_path}\n"
+		printf "= Downloading '%s' to '%s'\n" "$url" "${file_path}"
 
 		mkdir -p "${dir_path}"
 		curl --fail-with-body "$url" -o "${file_path}"

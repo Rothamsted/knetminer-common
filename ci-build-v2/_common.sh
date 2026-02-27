@@ -27,6 +27,7 @@ function main
 	run_stage deploy
 	run_stage release
 	run_stage remote_git_update
+	run_stage create_github_release
 	run_stage close
 }
 
@@ -41,6 +42,11 @@ function main
 # $is_debug && print "Debug message"
 #
 
+# Additional build-specific setup.
+# This should be dedicated to flavour-specific setup, and project-specifc setup in the hook 
+# stage_build_setup_local(). For instance, in the java-maven  flavour, this is used to install Maven.
+# If some setup applies to all kind of builds, then it should be in common_setup()
+#
 function stage_build_setup
 {
 	true
@@ -61,6 +67,13 @@ function stage_build
 	true
 }
 
+# Used for deployment operations, such as uploading distro files to a registry or deploying an app on 
+# a test server. This might depend on is_release_mode, eg, to decide what the target server is, or 
+# to deploy only upon release.
+#
+# Note that if an operation is ony executed upon releasing (eg, building a distro tarball, publishing
+# on a registry), then it should not be here, but in stage_release.
+# 
 function stage_deploy
 {
 	if ! is_deploy_mode; then
@@ -84,12 +97,10 @@ function stage_release
 	# Your _local implementation should start with this	
 	is_release_mode || return 0
 	
-	# DO release-related changes (change version, test, prepare binaries, etc)
-	
+	# DO release-related changes (change version, test, prepare binaries, etc)	
 	# release_commit_and_tag # commit them and tag with new version tag (sets CI_NEEDS_PUSH)
 	
-	# DO more changes to prepare the next snapshot/dev version
-	
+	# DO more changes to prepare the next snapshot/dev version	
 	# release_commit_new_snapshot # And commit these too (sets CI_NEEDS_PUSH)
 }
 
@@ -158,6 +169,20 @@ function stage_remote_git_update
 	
 	# TODO: Is --force still neded? Requires testing, maybe it messes up with the assigned release tag
   git push --force --tags origin HEAD:"$CI_GIT_BRANCH"
+}
+
+
+function stage_create_github_release
+{
+	is_release_mode || return 0
+	
+	printf "== Creating release ${CI_NEW_RELEASE_VER} on GitHub\n"
+
+	! ${CI_IS_LATEST_RELEASE:-true} || latest_flag='--latest'
+	! ${CI_IS_PRE_RELEASE:-false} || pre_release_flag='--prerelease'
+	
+	gh release create "${CI_NEW_RELEASE_VER}" $latest_flag $pre_release_flag \
+		--notes "${CI_RELEASE_NOTES}"
 }
 
 
@@ -269,6 +294,8 @@ EOT
 	# This is used in stages like remote_git_update(), if some previous stage set it to true, 
 	# then it's known that we need to push local changes back to the remote git repo.
 	export CI_NEEDS_PUSH=false
+
+	export CI_RELEASE_NOTES="All details in the [revision history]($GITHUB_SERVER_URL/$GITHUB_REPOSITORY/blob/master/revision-history.md)."
 
 } # common_setup ()
 

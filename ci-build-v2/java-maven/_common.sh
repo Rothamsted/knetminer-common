@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-#
+
 # The common stage implementations for projects based on Java and Maven.
 # 
 
@@ -8,23 +8,6 @@ set -e
 # A flavour starts with importing the core functions
 . ./ci-build-v2/_common.sh
 
-# Establishes the Maven goal to use in stage_build(), based on is_deploy_mode()
-#
-function get_maven_goal
-{
-	# If true, notifies which kind of maven goal the build is going to use
-	with_log="${1:-false}"
-	
-	if is_deploy_mode; then 
-		! $with_log || printf "\n\n\tMaven Deployment\n" >&2
-		echo deploy
-		return 0
-	fi
-		
-	! $with_log \
-		|| printf "\n\n\tNot in the main repo, and/or not in the master branch, building only, without deployment\n" >&2
-	echo install
-}
 
 function stage_build_setup
 {	
@@ -43,7 +26,7 @@ function stage_init_release
 {
 	is_release_mode true || return 0
 	 
-	printf "== Preparing Maven for release '%s'" "${CI_NEW_RELEASE_VER}"
+	printf "== Preparing Maven for release '%s'\n" "${CI_NEW_RELEASE_VER}"
   mvn versions:set -DnewVersion="${CI_NEW_RELEASE_VER}" -DallowSnapshots=true $MAVEN_ARGS
   # Commit immediately, even if it fails, we will have a chance to give up
   mvn versions:commit $MAVEN_ARGS
@@ -76,3 +59,21 @@ function stage_release
 	# CI_NEEDS_PUSH was already set	by release_commit_and_tag()
 }
 
+
+# Establishes the Maven goal to use in stage_build(), based on is_deploy_mode()
+#
+function get_maven_goal
+{
+	# If true, notifies which kind of maven goal the build is going to use
+	with_log="${1:-false}"
+	
+	if is_deploy_mode; then 
+		! $with_log || printf "\n\n\tMaven Deployment\n" >&2
+		echo deploy
+		return 0
+	fi
+		
+	! $with_log \
+		|| printf "\n\n\tNot in the main repo, and/or not in the master branch, building only, without deployment\n" >&2
+	echo install
+}
