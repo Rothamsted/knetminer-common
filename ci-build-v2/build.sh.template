@@ -1,51 +1,29 @@
 #!/usr/bin/env bash
 
 # A template foe the build.sh script, which a dependant project should use as bootstrap.
-# The file should do this:
-# - Download what's needed from this repository (see install_and_import() below), including files from the 
-#   the flavour you target (eg, java-maven/, python-poetry/)
-# - Source the _common.sh file for your flavour (eg, java-maven/_common.sh), which will import the 
-#   framework general functions and then override/extend them with flavour-specific code
-# - If it exists, source the _common-local.sh file for your flavour (eg, java-maven/_common-local.sh), which 
-#   can be used for further project-specific customizations.
-# - Finally, call `main`, which trigger the build, using flavour-specific and local implementations
-#
+# The build.sh script is the entry point for the build workflow, you should place this in your 
+# project, under <repo-root>/ci-build-v2/build.sh, edit it to suit your needs and then call it from
+# the github Actions workflow, using the appropriate arguments.
+
 set -e
 
-function install_and_import 
+# The script does the following:
+
+# Overrides any stage you need to customise with respect to the default implementation available for 
+# your target flavour. Or, does nothing if you're fine with the defaults
+function stage_build_setup_local
 {
-	url_base="$1"
-	printf "\n== Downloading from URL base '%s'\n\n" "$url_base"
+	printf "== Hello, I'm doing a custom setup for your project build\n"
+} 
 
-	file_local_paths=("_common.sh" "java-maven/_common.sh" "java-maven/maven-settings.xml")
+# Downloads and run our install.sh script, which in turn downloads the common scripts for the target flavour.
+printf "== Installing ci-build scripts and then running the build\n"
+# You can point to a particular release tag or branch
+ci_build_url_base="https://raw.githubusercontent.com/Rothamsted/knetminer-common/refs/heads/ci-build-v2"
+script_url="$ci_build_url_base/ci-build-v2/install.sh"
 
-	# Relative to the <git root>/ci-build-v2
-	for file_local_path in "${file_local_paths[@]}"
-	do
-		file_local_path="ci-build-v2/$file_local_path"
-		[[ ! -e "$file_local_path" ]] || continue;
-				
-		url="$url_base/${file_local_path}"
-		file_path="$(realpath "${file_local_path}")"		
-		dir_path="$(dirname "${file_path}")"
-		
-		printf "= Downloading '%s' to '%s'" "$url" "${file_path}\n"
+# install.sh takes the URL base to our own repository, and the flavour (eg, java-maven, python-poetry) you
+# want to use to build your project. Details in the script itself.
+. <(curl --fail-with-body -o - "$script_url") "$ci_build_url_base" python-poetry
 
-		mkdir -p "${dir_path}"
-		curl --fail-with-body "$url" -o "${file_path}"
-	done
-
-	# Eventually, these should be here.
-	. ./ci-build-v2/java-maven/_common.sh	
-
-	# WARNING: the best way to override functions defined in these imported files is 
-	# doing it in your own definition file and then importing it after the original ones, like
-	# it's shown here.
-	# This is not necessary if you only have stage_xxx_local() functions (or only your own new
-	# functions).
-	#
-	# . ./ci-build-v2/java-maven/_common-local.sh
-}
-
-install_and_import "https://raw.githubusercontent.com/Rothamsted/knetminer-common/refs/heads/ci-build-v2"
 main

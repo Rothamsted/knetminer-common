@@ -13,6 +13,8 @@ function stage_build_setup
 {	
 	# PyP uses this name as change log file, so we change the general default
 	export CI_RELEASE_NOTES="All details in the [revision history]($GITHUB_SERVER_URL/$GITHUB_REPOSITORY/blob/master/CHANGELOG.md)."
+	# This makes it log-friendly and suitable for unattended runs
+	export CI_POETRY_DEFAULT_ARGS="--no-interaction --no-ansi"
 }
 
 
@@ -27,12 +29,12 @@ function stage_init_release
 
 function stage_build
 {
-	printf "= Poetry lock/sync\n"
-	poetry lock
-	poetry sync
+	printf "== Poetry lock/sync\n"
+	poetry $CI_POETRY_DEFAULT_ARGS lock
+	poetry $CI_POETRY_DEFAULT_ARGS sync
 
-	printf "= Tests\n"
-	poetry run pytest
+	printf "== Tests\n"
+	poetry run $CI_POETRY_DEFAULT_ARGS -- pytest
 }
 
 function stage_release
@@ -43,15 +45,15 @@ function stage_release
 	is_release_mode || return 0
 
 	printf "== Poetry build\n"
-	poetry build
+	poetry $CI_POETRY_DEFAULT_ARGS build
 
 	printf "== Publishing on PyPI\n"
 	# This relies on POETRY_PYPI_TOKEN_PYPI defined in the secrets, user/password is now prohibited by PyPI,
 	# and for good reasons.
-	poetry publish
+	poetry $CI_POETRY_DEFAULT_ARGS publish
 
 	printf "== Moving the project to the next version\n"
-	poetry version ${CI_NEW_SNAPSHOT_VER}
+	poetry  $CI_POETRY_DEFAULT_ARGS version ${CI_NEW_SNAPSHOT_VER}
 
 	# Mark what we have just done with the release tag
 	release_commit_and_tag

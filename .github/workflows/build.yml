@@ -20,7 +20,8 @@ on:
         description: "When releasing, tells if it's a github pre-release. Ignored otherwise."
         required: false
         default: "false"
-    
+
+
 jobs:
   build:
 
