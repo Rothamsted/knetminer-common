@@ -21,6 +21,7 @@ function stage_build_setup
 function stage_init_release
 {
 	is_release_mode true || return 0
+	check_release_in_revision_history
 	 
 	printf "== Setting new release '%s' in pyproject.toml\n" "${CI_NEW_RELEASE_VER}"
 	poetry version "${CI_NEW_RELEASE_VER}"
