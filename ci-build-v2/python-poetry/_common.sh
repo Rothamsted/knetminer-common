@@ -45,10 +45,13 @@ function stage_release
 	printf "== Poetry build\n"
 	poetry build
 
-	printf "== Poetry publish\n"
+	printf "== Publishing on PyPI\n"
 	# This relies on POETRY_PYPI_TOKEN_PYPI defined in the secrets, user/password is now prohibited by PyPI,
 	# and for good reasons.
 	poetry publish
+
+	printf "== Moving the project to the next version\n"
+	poetry version ${CI_NEW_SNAPSHOT_VER}
 
 	# Mark what we have just done with the release tag
 	release_commit_and_tag
