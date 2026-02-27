@@ -46,7 +46,9 @@ function stage_release
 	poetry build
 
 	printf "== Poetry publish\n"
-	poetry publish --username "${CI_PYPI_USERNAME}" --password "${CI_PYPI_PASSWORD}"
+	# This relies on POETRY_PYPI_TOKEN_PYPI defined in the secrets, user/password is now prohibited by PyPI,
+	# and for good reasons.
+	poetry publish
 
 	# Mark what we have just done with the release tag
 	release_commit_and_tag
