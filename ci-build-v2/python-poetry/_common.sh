@@ -12,7 +12,7 @@ set -e
 function stage_build_setup
 {	
 	# PyP uses this name as change log file, so we change the general default
-	export CI_RELEASE_NOTES="All details in the [revision history]($GITHUB_SERVER_URL/$GITHUB_REPOSITORY/blob/master/CHANGELOG.md)."
+	export CI_REV_HISTORY_PATH="CHANGELOG.md"
 	# This makes it log-friendly and suitable for unattended runs
 	export CI_POETRY_DEFAULT_ARGS="--no-interaction --no-ansi"
 }

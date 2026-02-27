@@ -57,9 +57,20 @@ function stage_init_release
 {
 	# Your _local implementation should start with this
 	is_release_mode true || return 0
-
+	check_release_in_revision_history
+	
 	# And continue with what you need to do to prepare a release from the current
 	# git branch.
+}
+
+# Checks that the revision history contains the new release and the snapshot versions
+function check_release_in_revision_history
+{
+	for ver in "${CI_NEW_RELEASE_VER}" "${CI_NEW_SNAPSHOT_VER}"; do
+		! fgrep -q "$ver" "$CI_REV_HISTORY_PATH" || continue
+		printf "\n\nERROR: version '%s' not found in the revision history file '%s', looks like you need to update it, so I'll stop here\n\n" \
+			"$ver" "$CI_REV_HISTORY_PATH"
+	done
 }
 
 function stage_build
@@ -181,8 +192,9 @@ function stage_create_github_release
 	! ${CI_IS_LATEST_RELEASE:-true} || latest_flag='--latest'
 	! ${CI_IS_PRE_RELEASE:-false} || pre_release_flag='--prerelease'
 	
+	release_notes="All details in the [revision history]($GITHUB_SERVER_URL/$GITHUB_REPOSITORY/blob/master/$CI_REV_HISTORY_PATH)."
 	gh release create "${CI_NEW_RELEASE_VER}" $latest_flag $pre_release_flag \
-		--notes "${CI_RELEASE_NOTES}"
+		--notes "$release_notes"
 }
 
 
@@ -295,8 +307,7 @@ EOT
 	# then it's known that we need to push local changes back to the remote git repo.
 	export CI_NEEDS_PUSH=false
 
-	export CI_RELEASE_NOTES="All details in the [revision history]($GITHUB_SERVER_URL/$GITHUB_REPOSITORY/blob/master/revision-history.md)."
-
+	export CI_REV_HISTORY_PATH="revision-history.md"
 } # common_setup ()
 
 
