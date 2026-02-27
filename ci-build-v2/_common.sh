@@ -66,10 +66,12 @@ function stage_init_release
 # Checks that the revision history contains the new release and the snapshot versions
 function check_release_in_revision_history
 {
+	printf "== Checking release versions are in the revision history file\n"
 	for ver in "${CI_NEW_RELEASE_VER}" "${CI_NEW_SNAPSHOT_VER}"; do
 		! fgrep -q "$ver" "$CI_REV_HISTORY_PATH" || continue
 		printf "\n\nERROR: version '%s' not found in the revision history file '%s', looks like you need to update it, so I'll stop here\n\n" \
 			"$ver" "$CI_REV_HISTORY_PATH"
+		exit 1
 	done
 }
 
