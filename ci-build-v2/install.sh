@@ -14,6 +14,13 @@ function install_java_maven
 	install "java-maven" "$url_base" "_common.sh" "java-maven/_common.sh" "java-maven/maven-settings.xml"
 }
 
+function install_python_poetry
+{
+	url_base="$1"
+	install "python-poetry" "$url_base" "_common.sh" "python-poetry/_common.sh"
+}
+
+
 
 function install
 {
