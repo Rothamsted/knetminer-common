@@ -20,6 +20,14 @@ on:
         description: "When releasing, tells if it's a github pre-release. Ignored otherwise."
         required: false
         default: "false"
+        
+  # You should use this (instead of push) for large, time and resource-consuming codebases.
+  # build.sh uses CI_SCHEDULE_PERIOD to decide if there has been changes recently that actually need
+  # a rebuild.
+  #  
+  # schedule:
+  #  m h d M wd(MON-SUN), times are in UTC
+  # - cron: "0 10 * * *"
 
 
 jobs:

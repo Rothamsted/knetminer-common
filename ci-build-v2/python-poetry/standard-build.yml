@@ -1,0 +1,109 @@
+# The standard CI build workflow for the Python/Poetry flavour.
+# 
+# This is what you should use in your project, together with build.sh, to build based
+# on ci-build-v2 scripts.
+# 
+
+
+# TODO: check if we can use reusable workflows: https://docs.github.com/en/actions/how-tos/reuse-automations/reuse-workflows
+# The caller wf would have:
+#
+# call-standard-build:
+#   uses: Rothamsted/knetminer-common/.github/workflows/standard-build.yml@main
+#   with:
+#     NEW_RELEASE_VER: ${{ github.event.inputs.NEW_RELEASE_VER }}
+#     NEW_SNAPSHOT_VER: ${{ github.event.inputs.NEW_SNAPSHOT_VER }}
+#     ...
+#   secrets: inherit # To pass them all
+#
+# And the standard-build.yml (the called workflow) would have:
+# on:
+#   workflow_call:
+#     inputs:
+#       NEW_RELEASE_VER:
+#         required: false
+#         type: string
+#       NEW_SNAPSHOT_VER:
+#         required: false
+#         type: string
+#
+
+name: Standard Build
+
+on:
+  push:
+  workflow_dispatch:
+    inputs:
+      # These can be set when the build is invoked manually, from GH Actions.
+      #
+      # Set BOTH when you want to trigger a new release. The build script will 
+      # switch Maven to the new release, deploy, tag git, move Maven to the new snapshot
+      #
+      NEW_RELEASE_VER:
+        description: "New Release Version"
+        required: false
+      NEW_SNAPSHOT_VER:
+        description: "New Snapshot Version"
+        required: false
+      IS_LATEST_RELEASE:
+        description: "When releasing, tells if it's a github latest release. Ignored otherwise."
+        required: false
+        default: "true"
+      IS_PRE_RELEASE:
+        description: "When releasing, tells if it's a github pre-release. Ignored otherwise."
+        required: false
+        default: "false"
+
+permissions:
+  # needed to push and when the repo belongs to an organisation.
+  contents: write
+    
+jobs:
+  build:
+
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Code checkout
+      uses: actions/checkout@v4
+
+    - name: Set up Python
+      uses: actions/setup-python@v4
+      with:
+        python-version: "3.11"
+
+    - name: Set up Poetry
+      uses: Gr1N/setup-poetry@v8
+      with:
+        poetry-version: "2.3.2"      
+      
+    - name: Cache for Poetry Virtualenvs
+      uses: actions/cache@v4
+      with:
+        path: ~/.cache/pypoetry/virtualenvs
+        key: ${{ runner.os }}-poetry-${{ hashFiles('poetry.lock') }}
+
+    - name: Build
+      env:
+        # 
+        GIT_USER: ${{github.actor}}
+        GIT_PASSWORD: ${{github.GITHUB_TOKEN}}
+        CI_NEW_RELEASE_VER: ${{github.event.inputs.NEW_RELEASE_VER}}
+        CI_NEW_SNAPSHOT_VER: ${{github.event.inputs.NEW_SNAPSHOT_VER}}
+        CI_IS_LATEST_RELEASE: ${{github.event.inputs.IS_LATEST_RELEASE}}
+        CI_IS_PRE_RELEASE: ${{github.event.inputs.IS_PRE_RELEASE}}
+        CI_SLACK_API_NOTIFICATION_URL: ${{secrets.CI_SLACK_API_NOTIFICATION_URL}}
+        GIT_USER_EMAIL: ${{secrets.GIT_USER_EMAIL}}
+        # Used during releasing
+        POETRY_PYPI_TOKEN_PYPI: ${{secrets.POETRY_PYPI_TOKEN_PYPI}}
+        # Also used during releasing by the GH client, to create a new release on the repo
+        GH_TOKEN: ${{ github.token }}        
+        CI_TRIGGERING_EVENT: ${{github.event_name}}
+        # This is only set when using the act tool
+        CI_IS_ACT_TOOL: ${{ secrets.CI_IS_ACT_TOOL }}
+        # This also can be passed from act CLI
+        CI_DEPLOY_BRANCHES: ${{ secrets.CI_DEPLOY_BRANCHES }}
+      
+      # We reuse the general CI scripts in knetminer-common, see https://github.com/Rothamsted/knetminer-common  
+      run: 
+        ./ci-build-v2/python-poetry/build.sh
