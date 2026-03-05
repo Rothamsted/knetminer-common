@@ -132,10 +132,10 @@ function release_commit_and_tag
 	
 	# --allow-empty is needed cause previous steps might have their own commits, with their
 	# own messages
-	git commit -a --allow-empty -m "Releasing ${CI_NEW_RELEASE_VER}. ${CI_SKIP_TAG}"
+	git commit -a --allow-empty -m "release: commit changes for release ${CI_NEW_RELEASE_VER}. ${CI_SKIP_TAG}"
 	
   # TODO: --force was used in Travis, cause it seems to place a tag automatically
-	git tag --force --annotate "${CI_NEW_RELEASE_VER}" -m "Releasing ${CI_NEW_RELEASE_VER}. ${CI_SKIP_TAG}"
+	git tag --force --annotate "${CI_NEW_RELEASE_VER}" -m "release: add release tag ${CI_NEW_RELEASE_VER}. ${CI_SKIP_TAG}"
 
 	export CI_NEEDS_PUSH=true	
 }

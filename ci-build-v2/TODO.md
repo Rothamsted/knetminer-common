@@ -12,6 +12,8 @@
 
 ## Plan to go back to main
 * Finish things above, document usage, etc
+* Go back to main
+* Documentation
 * Release
-* Update consumer projects with a URL that links to version
+* Update consumer projects with a URL that links to a stable version
 

@@ -38,11 +38,10 @@ function stage_build
 	poetry run $CI_POETRY_DEFAULT_ARGS -- pytest
 }
 
+# See the generic version in ../_common.sh for details on how this stage should work.
+#
 function stage_release
 {
-	# Likely, your own flavour will be like this:
-	
-	# Your _local implementation should start with this	
 	is_release_mode || return 0
 
 	printf "== Poetry build\n"
