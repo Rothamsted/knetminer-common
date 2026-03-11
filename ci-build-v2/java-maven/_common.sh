@@ -3,7 +3,7 @@
 # The common stage implementations for projects based on Java and Maven.
 # 
 
-set -e
+set -eE -o pipefail
 
 # A flavour starts with importing the core functions
 . ./ci-build-v2/_common.sh

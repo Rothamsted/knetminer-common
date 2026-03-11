@@ -1,4 +1,6 @@
 
+set -eE -o pipefail
+
 # The Common Workflow
 # 
 # See README.md for an overview of this project.
@@ -218,8 +220,10 @@ function stage_close
 #
 function notify_failure
 {
+	# TODO: catch the initial error status and return it
+	
 	if [[ -z "$CI_SLACK_API_NOTIFICATION_URL" ]]; then
-	  printf "\n\nERROR: can't send error notification to empty Slack URL\n\n"
+	  printf "\n\nWARNING: can't send error notification to empty Slack URL\n\n"
 	  return 1
 	fi
 	
@@ -235,6 +239,8 @@ function notify_failure
   curl --fail-with-body -X POST -H 'Content-type: application/json' \
        --data "{ \"text\": \"$CI_FAIL_MESSAGE\" }" \
        "$CI_SLACK_API_NOTIFICATION_URL"
+
+	return 1
 }
 
 # Install notify_failure() by means of the 'trap' command.
@@ -248,7 +254,8 @@ function install_notification_failure
 	sudo apt -y update
 	sudo apt -y install curl
 	
-	printf "== Installing failure handler\n" 
+	printf "== Installing failure handler\n"
+	set -eE -o pipefail # Be very sure this is caught from any possible point
 	trap notify_failure ERR	
 }
 

@@ -33,6 +33,9 @@ name: Standard Build
 
 on:
   push:
+    # This allows for including/excluding branches against which this workflow must (not) run.
+    # See TODO for details. Note this is different than CI_DEPLOY_BRANCHES shown below.
+    # branches: ...
   workflow_dispatch:
     inputs:
       # These can be set when the build is invoked manually, from GH Actions.
@@ -87,22 +90,42 @@ jobs:
     - name: Build
       env:
         # 
-        GIT_USER: ${{github.actor}}
-        GIT_PASSWORD: ${{github.GITHUB_TOKEN}}
         CI_NEW_RELEASE_VER: ${{github.event.inputs.NEW_RELEASE_VER}}
         CI_NEW_SNAPSHOT_VER: ${{github.event.inputs.NEW_SNAPSHOT_VER}}
         CI_IS_LATEST_RELEASE: ${{github.event.inputs.IS_LATEST_RELEASE}}
         CI_IS_PRE_RELEASE: ${{github.event.inputs.IS_PRE_RELEASE}}
+
         CI_SLACK_API_NOTIFICATION_URL: ${{secrets.CI_SLACK_API_NOTIFICATION_URL}}
-        GIT_USER_EMAIL: ${{secrets.GIT_USER_EMAIL}}
-        # Used during releasing
+
+        # Used during releasing, points to your PyPI API token
         POETRY_PYPI_TOKEN_PYPI: ${{secrets.POETRY_PYPI_TOKEN_PYPI}}
+
+        # Set it up with yours, used with auto-commits
+        # TODO: is this automatically available from some GHA vars?
+        GIT_USER_EMAIL: ${{secrets.GIT_USER_EMAIL}}
+        
+        # These are usually auto-provided by GHA and you shouldn't need to change them
+        GIT_USER: ${{github.actor}}
+        GIT_PASSWORD: ${{github.GITHUB_TOKEN}}
+
         # Also used during releasing by the GH client, to create a new release on the repo
+        # TODO: what's the difference with github.GITHUB_TOKEN ?
         GH_TOKEN: ${{ github.token }}        
+
+        # What started this WF, as per GHA documentation
         CI_TRIGGERING_EVENT: ${{github.event_name}}
-        # This is only set when using the act tool
+
+        # This is only set when using the act tool, to tell certain script functions to behave 
+        # differently than usually (eg, some extra packages need to be installed on a act runner)
+        # When using act, you need to set this somewhere like a secrets file. If set, it should 
+        # be 'true' or 'false'. I couldn't find any other way to detect 'act'.
         CI_IS_ACT_TOOL: ${{ secrets.CI_IS_ACT_TOOL }}
-        # This also can be passed from act CLI
+
+        # A list of branches to be used for deploying or release operations. If this worflow is
+        # run against a branch not listed here, deployment operations (eg, PyPI/Maven publishing)
+        # will be skipped and releasing will be blocked with an error.
+        # Note that you can exclude a branch from running a CI build using the GHA 'branches' option
+        # (see above).
         CI_DEPLOY_BRANCHES: ${{ secrets.CI_DEPLOY_BRANCHES }}
       
       # We reuse the general CI scripts in knetminer-common, see https://github.com/Rothamsted/knetminer-common  

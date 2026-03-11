@@ -3,7 +3,7 @@
 # The common stage implementations for projects based on Python and Poetry.
 # 
 
-set -e
+set -eE -o pipefail
 
 # A flavour starts with importing the core functions
 . ./ci-build-v2/_common.sh

@@ -5,20 +5,24 @@
 # project, under <repo-root>/ci-build-v2/build.sh, edit it to suit your needs and then call it from
 # the github Actions workflow, using the appropriate arguments.
 
-set -e
+set -eE -o pipefail
 
-# The script does the following:
+# The script should the following:
 
-# Overrides any stage you need to customise with respect to the default implementation available for 
+# Override any stage you need to customise with respect to the default implementation available for 
 # your target flavour. Or, does nothing if you're fine with the defaults
 function stage_build_setup_local
 {
+	# This is just an example, you can delete this function in your build.sh, if you don't need it.
 	printf "== Hello, I'm doing a custom setup for your project build\n"
 } 
 
-# Downloads and run our install.sh script, which in turn downloads the common scripts for the target flavour.
+# Download and run our install.sh script, which in turn downloads the common scripts for the target flavour.
 printf "== Installing ci-build scripts and then running the build\n"
-# You can point to a particular release tag or branch
+
+# You can point to a particular release tag or branch at our repo
+# WARNING: DON'T leave download the generic head of the master or other branch, you should rely on
+# a stable release
 ci_build_url_base="https://raw.githubusercontent.com/Rothamsted/knetminer-common/refs/heads/ci-build-v2"
 script_url="$ci_build_url_base/ci-build-v2/install.sh"
 
