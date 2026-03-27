@@ -141,7 +141,7 @@ When you customise a build, have a look at existing conventions. For instance:
 
 * As per Bash conventions, variables that are exported to external scripts or comes from the outside have uppercase names, the others are lowercase.
 
-### Slack notifications
+### Slack notifications
 
 The `main()` function uses the [Bash trap mechanism](TODO) bind any build failure to the function `notify_failure()`. This checks if `CI_SLACK_API_NOTIFICATION_URL` is available (usually from GHA secrets) and possibly uses it to notify Slack of the problem. This can be useful for your Slack team and is based on [Slack web hooks](https://www.howtogeek.com/devops/how-to-send-a-message-to-slack-from-a-bash-script).
 
